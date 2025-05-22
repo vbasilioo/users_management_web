@@ -65,7 +65,6 @@ export default function CustomDashboardPage() {
                   <p className="text-sm font-medium">Bob Johnson</p>
                   <p className="text-sm text-muted-foreground">bob@example.com</p>
                 </div>
-                <div className="ml-auto text-sm text-muted-foreground">1 hour ago</div>
               </div>
             </div>
           </div>

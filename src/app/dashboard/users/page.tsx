@@ -2,7 +2,7 @@
 
 import { Spinner } from '@/components/ui/Spinner';
 import { useUsersPage } from './useUsersPage';
-import { UserCards } from '@/components/dashboard/users/UserCards';
+import { UserCards } from '@/components/dashboard/users';
 
 export default function UsersPage() {
   const {

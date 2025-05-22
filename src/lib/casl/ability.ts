@@ -20,7 +20,6 @@ export function defineAbilitiesFor(user: User | null) {
       
     case UserRole.MANAGER:
       can('read', 'User');
-      can('create', 'User');
       
       can('update', 'User');
       cannot('changeRole', 'User');

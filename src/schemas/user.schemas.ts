@@ -23,6 +23,12 @@ export const createUserSchema = z.object({
   role: z.enum(['admin', 'manager', 'user'] as [CreateUserDtoRole, ...CreateUserDtoRole[]]).default('user'),
 });
 
+// Define um valor padrão após a validação do objeto completo
+export const createUserWithDefaultsSchema = createUserSchema.transform((data) => ({
+  ...data,
+  role: data.role || 'user',
+}));
+
 export const updateUserSchema = z.object({
   name: z
     .string()
@@ -54,6 +60,14 @@ export const userSchema = z.object({
 });
 
 export type UserRole = z.infer<typeof userRoleSchema>;
-export type CreateUserValues = z.infer<typeof createUserSchema>;
+
+// Definido explicitamente para garantir que role seja obrigatório
+export interface CreateUserValues {
+  name: string;
+  email: string;
+  password: string;
+  role: 'admin' | 'manager' | 'user';
+}
+
 export type UpdateUserValues = z.infer<typeof updateUserSchema>;
 export type User = z.infer<typeof userSchema>; 
