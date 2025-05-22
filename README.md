@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sistema de Gerenciamento de Usuários
 
-## Getting Started
+Sistema web para gerenciamento de usuários com controle de permissões baseado em perfil, desenvolvido com React, Next.js, Redux, Tailwind CSS e CASL.
 
-First, run the development server:
+## Funcionalidades
+
+- **Autenticação Segura**:
+  - Sistema de login com JWT
+  - Armazenamento seguro de tokens
+  - Rotas protegidas
+
+- **Gerenciamento de Usuários**:
+  - Listagem de usuários (admin/gerente)
+  - Cadastro de novos usuários (admin)
+  - Edição de usuários (baseada em permissões)
+  - Exclusão de usuários (apenas admin)
+
+- **Controle de Acesso**:
+  - Permissões baseadas em perfis (admin, gerente, usuário)
+  - Interface adaptativa com base no nível de acesso do usuário
+  - Tratamento de tentativas de acesso não autorizado
+
+- **Perfis de Acesso**:
+  - **Administrador**: Acesso total ao sistema, pode criar usuários e alterar permissões
+  - **Gerente**: Visualiza todos os usuários, mas não pode alterar permissões
+  - **Usuário**: Acessa apenas seu próprio perfil e funcionalidades básicas
+
+## Tecnologias Utilizadas
+
+- **Frontend**:
+  - Next.js 15
+  - React 19
+  - Redux Toolkit (Gerenciamento de estado)
+  - CASL (Controle de autorização)
+  - React Hook Form + Zod (Validação de formulários)
+  - Tailwind CSS + Shadcn/UI (Interface de usuário)
+  - TypeScript
+
+- **Integração**:
+  - Axios (Requisições HTTP)
+  - JWT para autenticação
+  - Orval (Geração de tipos/interfaces a partir do OpenAPI)
+
+## Controle de Permissões
+
+O sistema implementa controle de acesso baseado em funções (RBAC) usando CASL:
+
+- Apenas administradores podem criar novos usuários e alterar permissões
+- Gerentes podem visualizar todos os usuários, mas só podem editar informações básicas
+- Usuários comuns só podem visualizar e editar seu próprio perfil
+
+## Como Iniciar
 
 ```bash
+# Instalar dependências
+npm install
+# ou
+pnpm install
+
+# Iniciar servidor de desenvolvimento
 npm run dev
-# or
-yarn dev
-# or
+# ou
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Acesse [http://localhost:3000](http://localhost:3000) para ver o sistema.
