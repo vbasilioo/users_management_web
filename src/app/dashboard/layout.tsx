@@ -1,6 +1,6 @@
 'use client';
 
-import { AppSidebar, SiteHeader } from '@/components';
+import { AppSidebar } from '@/components';
 import { Spinner } from '@/components/ui/Spinner';
 import { useDashboardLayout } from './layout/useDashboardLayout';
 
@@ -17,7 +17,7 @@ export default function DashboardLayout({
   
   if (shouldShowLoading) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-screen w-full">
         <Spinner size="lg" />
       </div>
     );
@@ -29,9 +29,8 @@ export default function DashboardLayout({
   
   if (shouldRenderSimpleLayout) {
     return (
-      <div className="flex min-h-screen flex-col">
-        <SiteHeader />
-        <main className="flex w-full flex-col overflow-hidden container mt-6">
+      <div className="flex min-h-screen flex-col w-full">
+        <main className="flex flex-1 w-full flex-col overflow-auto p-6">
           {children}
         </main>
       </div>
@@ -39,14 +38,11 @@ export default function DashboardLayout({
   }
   
   return (
-    <div className="flex min-h-screen flex-col">
-      <SiteHeader />
-      <div className="container flex-1 items-start md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10">
-        <AppSidebar className="hidden md:block" />
-        <main className="flex w-full flex-col overflow-hidden">
-          {children}
-        </main>
-      </div>
+    <div className="flex min-h-screen w-full">
+      <AppSidebar className="hidden md:block flex-shrink-0" />
+      <main className="flex flex-1 flex-col overflow-auto p-3 md:p-4">
+        {children}
+      </main>
     </div>
   );
 } 

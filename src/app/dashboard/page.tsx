@@ -1,36 +1,18 @@
-import { ChartAreaInteractive } from "@/components/chart-area-interactive"
-import { SectionCards } from "@/components/section-cards"
-import {
-  SidebarInset,
-  SidebarProvider,
-} from "@/components/ui/sidebar"
-
-import { AppSidebar, SiteHeader } from "@/components"
+import { UserCards } from "@/components/dashboard/users/UserCards"
 
 export default function Page() {
   return (
-    <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "calc(var(--spacing) * 72)",
-          "--header-height": "calc(var(--spacing) * 12)",
-        } as React.CSSProperties
-      }
-    >
-      <AppSidebar variant="inset" />
-      <SidebarInset>
-        <SiteHeader />
+    <section>
         <div className="flex flex-1 flex-col">
-          <div className="@container/main flex flex-1 flex-col gap-2">
+          <div className="flex flex-1 flex-col">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-              <SectionCards />
               <div className="px-4 lg:px-6">
-                <ChartAreaInteractive />
+                <h1 className="text-2xl font-bold mb-6">Users</h1>
+                <UserCards />
               </div>
             </div>
           </div>
         </div>
-      </SidebarInset>
-    </SidebarProvider>
+    </section>
   )
 }

@@ -2,7 +2,7 @@
 
 import * as React from "react"
 
-import { NavDocuments, NavMain, NavSecondary, NavUser } from "@/components/navigation"
+import { NavMain, NavSecondary, NavUser } from "@/components/navigation"
 import {
   Sidebar,
   SidebarContent,
@@ -35,7 +35,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

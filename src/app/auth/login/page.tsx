@@ -1,5 +1,5 @@
 import { ManagementIllustration } from '@/components';
-import { LoginForm } from '@/components/auth/LoginForm';
+import { LoginForm } from '@/components/auth/login-form/LoginForm';
 import Link from 'next/link';
 
 export default function LoginPage() {

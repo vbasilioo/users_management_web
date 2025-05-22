@@ -19,7 +19,7 @@ export const getSidebarData = (currentUser: User | null) => {
       name: "Guest",
       email: "guest@example.com",
       avatar: "/avatars/default.jpg",
-    },
+  },
     documents: [],
     navSecondary: [],
   };

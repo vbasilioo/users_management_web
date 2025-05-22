@@ -1,6 +1,5 @@
 'use client';
 
-import { useAuth } from './useAuth';
 import { loginFormSchema, type LoginFormValues } from '@/schemas/auth.schemas';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8,6 +7,7 @@ import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect, useCallback } from 'react';
 import { useAppSelector } from '@/lib/redux/hooks';
+import { useAuth } from '../useAuth';
 
 export function useLogin() {
   const { login, authCheckComplete } = useAuth();
