@@ -156,7 +156,6 @@ export function UserTableUI({
       ) : (
         <div className="rounded-md border">
           <Table>
-            <TableCaption>List of all users in the system</TableCaption>
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[50px]">#</TableHead>

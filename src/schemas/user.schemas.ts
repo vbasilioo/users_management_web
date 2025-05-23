@@ -23,7 +23,6 @@ export const createUserSchema = z.object({
   role: z.enum(['admin', 'manager', 'user'] as [CreateUserDtoRole, ...CreateUserDtoRole[]]).default('user'),
 });
 
-// Define um valor padrão após a validação do objeto completo
 export const createUserWithDefaultsSchema = createUserSchema.transform((data) => ({
   ...data,
   role: data.role || 'user',
@@ -45,8 +44,10 @@ export const updateUserSchema = z.object({
     .transform((email) => email.toLowerCase())
     .optional(),
   password: z
-    .string()
-    .min(8, 'Password must have at least 8 characters.')
+    .union([
+      z.string().min(8, 'Password must have at least 8 characters.'),
+      z.string().length(0)
+    ])
     .optional(),
   role: z.enum(['admin', 'manager', 'user'] as [UpdateUserDtoRole, ...UpdateUserDtoRole[]]).optional(),
 });
@@ -60,8 +61,6 @@ export const userSchema = z.object({
 });
 
 export type UserRole = z.infer<typeof userRoleSchema>;
-
-// Definido explicitamente para garantir que role seja obrigatório
 export interface CreateUserValues {
   name: string;
   email: string;

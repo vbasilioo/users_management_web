@@ -1,6 +1,6 @@
 'use client';
 
-import { UserTable } from "@/components/dashboard/users"
+import { UserTable } from "@/components/dashboard/users";
 
 export default function Page() {
   return (

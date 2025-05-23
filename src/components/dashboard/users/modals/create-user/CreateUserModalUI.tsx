@@ -32,7 +32,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
-// Definir o schema inline para o formulário
 const createUserFormSchema = z.object({
   name: z.string().min(3, 'Name must have at least 3 characters.'),
   email: z.string().min(1, 'Email is required.').email('Invalid email format.'),
@@ -40,7 +39,6 @@ const createUserFormSchema = z.object({
   role: z.enum(['admin', 'manager', 'user'])
 });
 
-// Define o tipo a partir do schema
 type CreateUserFormValues = z.infer<typeof createUserFormSchema>;
 
 interface CreateUserModalUIProps {

@@ -2,9 +2,9 @@
 
 import { UserCardsUI } from './UserCardsUI';
 import { useUserCards } from './useUserCards';
-import { CreateUserModal } from '../modals/CreateUser';
-import { EditUserModal } from '../modals/EditUser';
-import { DeleteUserModal } from '../modals/DeleteUser';
+import { CreateUserModal } from '../modals/create-user';
+import { EditUserModal } from '../modals/edit-user';
+import { DeleteUserModal } from '../modals/delete-user';
 
 export function UserCards() {
   const {

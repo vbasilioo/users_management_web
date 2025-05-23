@@ -2,9 +2,9 @@
 
 import { UserTableUI } from './UserTableUI';
 import { useUserTable } from '../useUserTable';
-import { CreateUserModal } from '../modals/CreateUser';
-import { EditUserModal } from '../modals/EditUser';
-import { DeleteUserModal } from '../modals/DeleteUser';
+import { CreateUserModal } from '../modals/create-user';
+import { EditUserModal } from '../modals/edit-user';
+import { DeleteUserModal } from '../modals/delete-user';
 
 export function UserTable() {
   const {

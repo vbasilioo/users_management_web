@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAppSelector, useAppDispatch } from '@/lib/redux/hooks';
 import { updateUser } from '@/lib/redux/slices/authSlice';
 import { useAuth } from '@/components/auth/useAuth';
@@ -9,33 +9,33 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { updateUserSchema } from '@/schemas/user.schemas';
 import { z } from 'zod';
+import api from '@/app/api/client';
+import { useAbility } from '@/lib/casl/AbilityContext';
 
-const profileSchema = updateUserSchema.extend({
-  firstName: z.string().optional(),
-  lastName: z.string().optional(),
-});
+const profileSchema = updateUserSchema;
 
 type ProfileFormValues = z.infer<typeof profileSchema>;
 
 export function useProfilePage() {
-  const { user } = useAppSelector((state) => state.auth);
+  const { user, profileUpdateSuccess } = useAppSelector((state) => state.auth);
   const currentUser = useAppSelector((state) => state.auth.user);
   const dispatch = useAppDispatch();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { isLoading } = useAuth();
   const [permissionError, setPermissionError] = useState<string | null>(null);
-
-  const nameParts = user?.name ? user.name.split(' ') : ['', ''];
-  const firstName = nameParts[0] || '';
-  const lastName = nameParts.slice(1).join(' ') || '';
+  const ability = useAbility();
 
   const isAdmin = currentUser?.role === 'admin';
   const isManager = currentUser?.role === 'manager';
   const isSameUser = currentUser?.id === user?.id;
 
-  if (user && !isAdmin && !isManager && !isSameUser) {
-    setPermissionError("You don't have permission to view this profile.");
-  }
+  useEffect(() => {
+    if (user && !isAdmin && !isManager && !isSameUser) {
+      setPermissionError("You don't have permission to view this profile.");
+    } else {
+      setPermissionError(null);
+    }
+  }, [user, isAdmin, isManager, isSameUser]);
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
@@ -44,43 +44,52 @@ export function useProfilePage() {
       email: user?.email || '',
       password: '',
       role: user?.role || 'user',
-      
-      firstName: firstName,
-      lastName: lastName,
     }
   });
 
-  const onSubmit = async (data: ProfileFormValues) => {
-    if (!user) return;
+  useEffect(() => {
+    if (user) {
+      form.reset({
+        name: user.name || '',
+        email: user.email || '',
+        password: '',
+        role: user.role || 'user',
+      }, { keepValues: true });
+    }
+  }, [form, user]);
 
-    if (!isAdmin && data.role !== user.role) {
+  const onSubmit = async (data: ProfileFormValues) => {
+    if (!user || !user.id) return;
+
+    if (!ability.can('changeRole', 'User') && data.role !== user.role) {
       setPermissionError("You don't have permission to change role.");
       return;
-    }
-
-    if (!data.password) {
-      delete data.password;
-    }
-    
-    if (data.firstName || data.lastName) {
-      data.name = [data.firstName, data.lastName].filter(Boolean).join(' ');
     }
 
     try {
       setIsSubmitting(true);
       setPermissionError(null);
       
-      setTimeout(() => {
-        const updatedUser = {
-          ...user,
-          ...data
-        };
+      const formData = { ...data };
+      
+      if (!formData.password || formData.password.trim() === '') {
+        delete formData.password;
+      }
+      
+      const response = await api.patch(`/users/${user.id}`, formData);
+      
+      if (response.status === 200) {
+        const updatedUser = { ...user, ...response.data };
         dispatch(updateUser(updatedUser));
+        
         toast.success('Profile updated successfully!');
-        setIsSubmitting(false);
-      }, 1000);
-    } catch {
+      } else {
+        throw new Error('Failed to update profile');
+      }
+    } catch (error) {
+      console.error('Error updating profile:', error);
       toast.error('Failed to update profile');
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -94,6 +103,7 @@ export function useProfilePage() {
     onSubmit,
     permissionError,
     isAdmin,
-    isManager
+    isManager,
+    profileUpdateSuccess
   };
 } 

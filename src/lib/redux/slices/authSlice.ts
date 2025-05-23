@@ -8,6 +8,7 @@ interface AuthState {
   isLoading: boolean;
   authCheckComplete: boolean;
   error: string | null;
+  profileUpdateSuccess: boolean;
 }
 
 const getStoredToken = () => {
@@ -24,6 +25,7 @@ const initialState: AuthState = {
   isLoading: false,
   authCheckComplete: false,
   error: null,
+  profileUpdateSuccess: false,
 };
 
 export const authSlice = createSlice({
@@ -56,6 +58,10 @@ export const authSlice = createSlice({
     },
     updateUser: (state, action: PayloadAction<User>) => {
       state.user = action.payload;
+      state.profileUpdateSuccess = true;
+    },
+    resetProfileUpdateStatus: (state) => {
+      state.profileUpdateSuccess = false;
     },
     fetchUserStart: (state) => {
       state.isLoading = true;
@@ -83,6 +89,7 @@ export const {
   loginFailed,
   logout,
   updateUser,
+  resetProfileUpdateStatus,
   fetchUserStart,
   fetchUserSuccess,
   fetchUserFailed,

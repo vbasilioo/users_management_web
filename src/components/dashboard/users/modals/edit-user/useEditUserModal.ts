@@ -64,13 +64,13 @@ export function useEditUserModal(
         return;
       }
 
-      let success = false;
-      if (!data.password) {
-        const { ...restData } = data;
-        success = await updateUser(user.id, restData);
-      } else {
-        success = await updateUser(user.id, data);
+      // Remover a senha se estiver vazia
+      const updatedData = { ...data };
+      if (!updatedData.password || updatedData.password.trim() === '') {
+        delete updatedData.password;
       }
+      
+      const success = await updateUser(user.id, updatedData);
       
       if (success) {
         toast.success('User updated successfully');

@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
-import { fetchUsersStart, fetchUsersSuccess, fetchUsersFailed } from '@/lib/redux/slices/usersSlice';
+import { fetchUsers } from '@/lib/redux/features/users/usersSlice';
 import { useUsersControllerFindAll } from '@/app/api/generated/users/users';
 import { usersListResponseSchema } from '@/schemas/api.schemas';
 import { toast } from 'sonner';
@@ -24,11 +24,9 @@ export function useUsersPage() {
         const result = usersListResponseSchema.safeParse(data);
         
         if (result.success && result.data.data && !result.data.error) {
-          dispatch(fetchUsersSuccess(result.data.data.users));
           return result.data.data.users;
         } else {
           const message = result.success ? result.data.message : 'Invalid response format';
-          dispatch(fetchUsersFailed(message));
           toast.error(message);
           return [];
         }
@@ -46,17 +44,19 @@ export function useUsersPage() {
     }
 
     if (!isLoading && users.length === 0) {
-      dispatch(fetchUsersStart());
-      usersQuery.refetch();
+      dispatch(fetchUsers())
+        .unwrap()
+        .catch((error) => {
+          toast.error(error || 'Failed to fetch users');
+        });
     }
-  }, [ability, dispatch, hasPermission, isLoading, router, users.length, usersQuery]);
+  }, [ability, dispatch, hasPermission, isLoading, router, users.length]);
 
   useEffect(() => {
     if (usersQuery.error) {
-      dispatch(fetchUsersFailed('Failed to fetch users'));
       toast.error('Failed to fetch users');
     }
-  }, [dispatch, usersQuery.error]);
+  }, [usersQuery.error]);
 
   const navigateToNewUser = () => router.push('/dashboard/users/new');
   const navigateToEditUser = (userId: string) => router.push(`/dashboard/users/${userId}`);
