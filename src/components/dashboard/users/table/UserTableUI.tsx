@@ -3,7 +3,6 @@
 import { 
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -18,7 +17,8 @@ import {
   Search,
   Trash2,
   Filter,
-  Loader2
+  Loader2,
+  Menu
 } from 'lucide-react';
 import { 
   Select,
@@ -30,6 +30,7 @@ import {
 import { Can } from '@/lib/casl/AbilityContext';
 import { Badge } from '@/components/ui/badge';
 import { UserWithDates } from '../useUserTable';
+import { SidebarTrigger } from '@/components/ui/sidebar';
 
 interface UserTableUIProps {
   users: UserWithDates[];
@@ -82,6 +83,13 @@ export function UserTableUI({
 
   return (
     <div className="space-y-6">
+      <div className="flex justify-between items-center md:hidden mb-4">
+        <h1 className="text-xl font-medium">Users</h1>
+        <SidebarTrigger className="text-gray-600">
+          <Menu className="h-5 w-5" />
+        </SidebarTrigger>
+      </div>
+      
       <div className="rounded-lg border bg-background p-4">
         <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
@@ -97,43 +105,39 @@ export function UserTableUI({
               </div>
             </div>
             
-            <div className="flex gap-2 items-center">
+            <div className="flex gap-3 items-center">
               <Filter className="h-4 w-4 text-muted-foreground" />
-              <div>
-                <Select
-                  value={roleFilter}
-                  onValueChange={(value: string) => 
-                    setRoleFilter(value as 'all' | 'admin' | 'manager' | 'user')}
-                >
-                  <SelectTrigger className="w-[140px]">
-                    <SelectValue placeholder="Role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All roles</SelectItem>
-                    <SelectItem value="admin">Administrator</SelectItem>
-                    <SelectItem value="manager">Manager</SelectItem>
-                    <SelectItem value="user">User</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              <Select
+                value={roleFilter}
+                onValueChange={(value: string) => 
+                  setRoleFilter(value as 'all' | 'admin' | 'manager' | 'user')}
+              >
+                <SelectTrigger className="w-[140px] justify-between">
+                  <SelectValue placeholder="Role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All roles</SelectItem>
+                  <SelectItem value="admin">Administrator</SelectItem>
+                  <SelectItem value="manager">Manager</SelectItem>
+                  <SelectItem value="user">User</SelectItem>
+                </SelectContent>
+              </Select>
               
-              <div>
-                <Select
-                  value={dateFilter}
-                  onValueChange={(value: string) => 
-                    setDateFilter(value as 'all' | 'week' | 'month' | 'year')}
-                >
-                  <SelectTrigger className="w-[140px]">
-                    <SelectValue placeholder="Date" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All time</SelectItem>
-                    <SelectItem value="week">Last week</SelectItem>
-                    <SelectItem value="month">Last month</SelectItem>
-                    <SelectItem value="year">Last year</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              <Select
+                value={dateFilter}
+                onValueChange={(value: string) => 
+                  setDateFilter(value as 'all' | 'week' | 'month' | 'year')}
+              >
+                <SelectTrigger className="w-[140px] justify-between">
+                  <SelectValue placeholder="Date" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All time</SelectItem>
+                  <SelectItem value="week">Last week</SelectItem>
+                  <SelectItem value="month">Last month</SelectItem>
+                  <SelectItem value="year">Last year</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 

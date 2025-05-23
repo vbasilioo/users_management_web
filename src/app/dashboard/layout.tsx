@@ -1,8 +1,9 @@
 'use client';
 
-import { AppSidebar } from '@/components';
+import { AppSidebar } from '@/components/layout/AppSidebar';
 import { Spinner } from '@/components/ui/Spinner';
 import { useDashboardLayout } from './layout/useDashboardLayout';
+import { SidebarProvider } from '@/components/ui/sidebar';
 
 export default function DashboardLayout({
   children,
@@ -38,11 +39,13 @@ export default function DashboardLayout({
   }
   
   return (
-    <div className="flex min-h-screen w-full">
-      <AppSidebar className="hidden md:block flex-shrink-0" />
-      <main className="flex flex-1 flex-col overflow-auto p-3 md:p-4">
-        {children}
-      </main>
-    </div>
+    <SidebarProvider>
+      <div className="flex min-h-screen">
+        <AppSidebar className="hidden md:block h-screen flex-shrink-0" />
+        <main className="flex flex-1 flex-col overflow-auto p-3 md:p-4">
+          {children}
+        </main>
+      </div>
+    </SidebarProvider>
   );
 } 

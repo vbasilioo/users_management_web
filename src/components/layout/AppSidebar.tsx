@@ -13,12 +13,17 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { useAppSidebar } from "./useAppSidebar"
+import { cn } from "@/lib/utils"
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ className, ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data } = useAppSidebar(props);
   
   return (
-    <Sidebar collapsible="offcanvas" {...props}>
+    <Sidebar 
+      collapsible="offcanvas" 
+      className={cn("w-64 border-r bg-white", className)}
+      {...props}
+    >
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>

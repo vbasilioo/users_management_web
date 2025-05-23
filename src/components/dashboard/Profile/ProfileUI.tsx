@@ -4,12 +4,13 @@ import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowRightIcon, CheckCircle, AlertCircle, LogOut } from 'lucide-react';
+import { ArrowRightIcon, CheckCircle, AlertCircle, LogOut, Menu } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { User } from '@/schemas/user.schemas';
 import { UseFormReturn } from 'react-hook-form';
 import { updateUserSchema } from '@/schemas/user.schemas';
 import { z } from 'zod';
+import { SidebarTrigger } from '@/components/ui/sidebar';
 
 type ProfileFormValues = z.infer<typeof updateUserSchema>;
 
@@ -42,6 +43,13 @@ export function ProfileUI({
 }: ProfileUIProps) {
   return (
     <div className="w-full mx-auto bg-white p-6">
+      <div className="flex justify-between items-center md:hidden mb-4">
+        <h1 className="text-gray-600 text-xl font-medium">My Profile</h1>
+        <SidebarTrigger className="text-gray-600">
+          <Menu className="h-5 w-5" />
+        </SidebarTrigger>
+      </div>
+      
       {permissionError && (
         <Alert variant="destructive" className="mb-6">
           <AlertCircle className="h-4 w-4" />
@@ -61,7 +69,7 @@ export function ProfileUI({
       )}
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-        <div className="flex items-center gap-2">
+        <div className="hidden md:flex items-center gap-2">
           <h1 className="text-gray-600 text-xl font-medium">My Profile</h1>
           <span className="text-gray-400">›</span>
           <span className="text-xl font-medium">Edit Profile</span>

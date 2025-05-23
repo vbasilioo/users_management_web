@@ -130,11 +130,7 @@ function SidebarProvider({
       <TooltipProvider delayDuration={0}>
         <div
           data-slot="sidebar-wrapper"
-          className={cn(
-            "group/sidebar-wrapper has-data-[variant=inset]:bg-sidebar flex min-h-svh w-full",
-            "w-64 [--sidebar-width:16rem] [--sidebar-width-icon:3rem]",
-            className
-          )}
+          className={cn("group/sidebar-wrapper", className)}
           style={style}
           {...props}
         >

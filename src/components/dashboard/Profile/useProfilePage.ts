@@ -13,8 +13,12 @@ import api from '@/app/api/client';
 import { useAbility } from '@/lib/casl/AbilityContext';
 
 interface ApiResponse {
-  data?: User;
-  status: number;
+  id?: string;
+  name?: string;
+  email?: string;
+  role?: 'admin' | 'manager' | 'user';
+  error?: boolean;
+  message?: string;
   [key: string]: unknown;
 }
 
@@ -84,13 +88,18 @@ export function useProfilePage() {
       
       const response = await api.patch<ApiResponse>(`/users/${user.id}`, formData);
       
-      if (response.status === 200) {
-        const updatedUser = { ...user, ...response.data };
-        dispatch(updateUser(updatedUser));
+      if (response && response.error === false) {
+        const updatedUserData: User = {
+          id: response.id || user.id,
+          name: response.name || user.name,
+          email: response.email || user.email,
+          role: response.role || user.role,
+        };
         
+        dispatch(updateUser(updatedUserData));
         toast.success('Profile updated successfully!');
       } else {
-        throw new Error('Failed to update profile');
+        throw new Error(response.message || 'Failed to update profile');
       }
     } catch (error) {
       console.error('Error updating profile:', error);
