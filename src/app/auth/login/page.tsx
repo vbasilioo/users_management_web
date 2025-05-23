@@ -1,6 +1,5 @@
 import { ManagementIllustration } from '@/components';
 import { LoginForm } from '@/components/auth/login-form/LoginForm';
-import Link from 'next/link';
 
 export default function LoginPage() {
   return (
@@ -17,14 +16,6 @@ export default function LoginPage() {
           
           <LoginForm />
           
-          <div className="mt-8 text-center">
-            <p className="text-sm">
-              Don&apos;t have an account?{' '}
-              <Link href="/auth/register" className="font-medium text-blue-600 hover:text-blue-500">
-                Sign Up
-              </Link>
-            </p>
-          </div>
         </div>
       </div>
       

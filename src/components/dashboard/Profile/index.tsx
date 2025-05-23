@@ -16,7 +16,8 @@ export function ProfileComponent() {
     form, 
     onSubmit, 
     permissionError, 
-    profileUpdateSuccess 
+    profileUpdateSuccess,
+    onLogout
   } = useProfilePage();
   
   const [showPasswordChange, setShowPasswordChange] = useState(false);
@@ -69,6 +70,7 @@ export function ProfileComponent() {
       onPasswordToggle={handlePasswordToggle}
       onSubmit={handleFormSubmit}
       getInitials={getInitials}
+      onLogout={onLogout}
     />
   );
 } 

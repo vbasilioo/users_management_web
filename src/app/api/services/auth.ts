@@ -4,25 +4,22 @@ import { AuthResponse } from '@/schemas/api.schemas';
 
 export const authService = {
   login: async (data: LoginFormValues): Promise<AuthResponse> => {
-    const response = await api.post<AuthResponse>('/auth/login', data);
-    return response.data;
+    return api.post<AuthResponse>('/auth/login', data);
   },
   
   register: async (data: RegisterFormValues): Promise<AuthResponse> => {
-    const response = await api.post<AuthResponse>('/auth/register', {
+    return api.post<AuthResponse>('/users', {
       name: data.name,
       email: data.email,
       password: data.password
     });
-    return response.data;
   },
   
   logout: async (): Promise<void> => {
-    await api.post('/auth/logout');
+    return api.post<void>('/auth/logout');
   },
   
   getCurrentUser: async () => {
-    const response = await api.get('/auth/me');
-    return response.data;
+    return api.get<{ id: string; name: string; email: string; role: string }>('/auth/me');
   }
 }; 

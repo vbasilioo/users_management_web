@@ -7,10 +7,16 @@ import { useAuth } from '@/components/auth/useAuth';
 import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { updateUserSchema } from '@/schemas/user.schemas';
+import { updateUserSchema, User } from '@/schemas/user.schemas';
 import { z } from 'zod';
 import api from '@/app/api/client';
 import { useAbility } from '@/lib/casl/AbilityContext';
+
+interface ApiResponse {
+  data?: User;
+  status: number;
+  [key: string]: unknown;
+}
 
 const profileSchema = updateUserSchema;
 
@@ -21,7 +27,7 @@ export function useProfilePage() {
   const currentUser = useAppSelector((state) => state.auth.user);
   const dispatch = useAppDispatch();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { isLoading } = useAuth();
+  const { isLoading, logout } = useAuth();
   const [permissionError, setPermissionError] = useState<string | null>(null);
   const ability = useAbility();
 
@@ -76,7 +82,7 @@ export function useProfilePage() {
         delete formData.password;
       }
       
-      const response = await api.patch(`/users/${user.id}`, formData);
+      const response = await api.patch<ApiResponse>(`/users/${user.id}`, formData);
       
       if (response.status === 200) {
         const updatedUser = { ...user, ...response.data };
@@ -104,6 +110,7 @@ export function useProfilePage() {
     permissionError,
     isAdmin,
     isManager,
-    profileUpdateSuccess
+    profileUpdateSuccess,
+    onLogout: logout
   };
 } 

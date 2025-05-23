@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowRightIcon, CheckCircle, AlertCircle } from 'lucide-react';
+import { ArrowRightIcon, CheckCircle, AlertCircle, LogOut } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { User } from '@/schemas/user.schemas';
 import { UseFormReturn } from 'react-hook-form';
@@ -24,6 +24,7 @@ export interface ProfileUIProps {
   onPasswordToggle: () => void;
   onSubmit: (e: React.FormEvent) => void;
   getInitials: (name: string) => string;
+  onLogout: () => void;
 }
 
 export function ProfileUI({
@@ -36,7 +37,8 @@ export function ProfileUI({
   profileUpdateSuccess,
   onPasswordToggle,
   onSubmit,
-  getInitials
+  getInitials,
+  onLogout
 }: ProfileUIProps) {
   return (
     <div className="w-full mx-auto bg-white p-6">
@@ -64,24 +66,35 @@ export function ProfileUI({
           <span className="text-gray-400">›</span>
           <span className="text-xl font-medium">Edit Profile</span>
         </div>
-        <Button 
-          type="submit" 
-          form="profile-form"
-          className="bg-green-600 hover:bg-green-700 text-white rounded-full px-6"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? (
-            <>
-              <Spinner size="sm" className="mr-2" color="white" />
-              <span>SAVING</span>
-            </>
-          ) : (
-            <>
-              <span>SAVE</span>
-              <ArrowRightIcon className="ml-2 h-4 w-4" />
-            </>
-          )}
-        </Button>
+        <div className="flex gap-3">
+          <Button 
+            type="submit" 
+            form="profile-form"
+            className="bg-green-600 hover:bg-green-700 text-white rounded-full px-6"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <>
+                <Spinner size="sm" className="mr-2" color="white" />
+                <span>SAVING</span>
+              </>
+            ) : (
+              <>
+                <span>SAVE</span>
+                <ArrowRightIcon className="ml-2 h-4 w-4" />
+              </>
+            )}
+          </Button>
+          <Button 
+            type="button"
+            variant="outline"
+            className="border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700 rounded-full"
+            onClick={onLogout}
+          >
+            <LogOut className="mr-2 h-4 w-4" />
+            <span>LOGOUT</span>
+          </Button>
+        </div>
       </div>
       
       <div className="bg-white shadow rounded-lg p-4 md:p-8">

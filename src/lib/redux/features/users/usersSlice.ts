@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '@/schemas/user.schemas';
 import api from '@/app/api/client';
-import { AxiosError } from 'axios';
 
 interface ApiError {
   message: string;
@@ -26,11 +25,11 @@ export const fetchUsers = createAsyncThunk(
   'users/fetchUsers',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await api.get('/users');
-      return response.data;
+      const data = await api.get<User[]>('/users');
+      return data;
     } catch (error) {
-      const axiosError = error as AxiosError<ApiError>;
-      return rejectWithValue(axiosError.response?.data?.message || 'Failed to fetch users');
+      const err = error as { response?: { data?: ApiError } };
+      return rejectWithValue(err.response?.data?.message || 'Failed to fetch users');
     }
   }
 );
@@ -39,11 +38,11 @@ export const createUser = createAsyncThunk(
   'users/createUser',
   async (userData: Omit<User, 'id'>, { rejectWithValue }) => {
     try {
-      const response = await api.post('/users', userData);
-      return response.data;
+      const data = await api.post<User>('/users', userData);
+      return data;
     } catch (error) {
-      const axiosError = error as AxiosError<ApiError>;
-      return rejectWithValue(axiosError.response?.data?.message || 'Failed to create user');
+      const err = error as { response?: { data?: ApiError } };
+      return rejectWithValue(err.response?.data?.message || 'Failed to create user');
     }
   }
 );
@@ -52,11 +51,11 @@ export const updateUser = createAsyncThunk(
   'users/updateUser',
   async ({ id, userData }: { id: string; userData: Partial<User> }, { rejectWithValue }) => {
     try {
-      const response = await api.patch(`/users/${id}`, userData);
-      return response.data;
+      const data = await api.patch<User>(`/users/${id}`, userData);
+      return data;
     } catch (error) {
-      const axiosError = error as AxiosError<ApiError>;
-      return rejectWithValue(axiosError.response?.data?.message || 'Failed to update user');
+      const err = error as { response?: { data?: ApiError } };
+      return rejectWithValue(err.response?.data?.message || 'Failed to update user');
     }
   }
 );
@@ -65,11 +64,11 @@ export const deleteUser = createAsyncThunk(
   'users/deleteUser',
   async (id: string, { rejectWithValue }) => {
     try {
-      await api.delete(`/users/${id}`);
+      await api.delete<void>(`/users/${id}`);
       return id;
     } catch (error) {
-      const axiosError = error as AxiosError<ApiError>;
-      return rejectWithValue(axiosError.response?.data?.message || 'Failed to delete user');
+      const err = error as { response?: { data?: ApiError } };
+      return rejectWithValue(err.response?.data?.message || 'Failed to delete user');
     }
   }
 );

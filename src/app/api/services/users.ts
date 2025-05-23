@@ -3,21 +3,18 @@ import { User, UpdateUserValues } from '@/schemas/user.schemas';
 
 export const userService = {
   getUsers: async (): Promise<User[]> => {
-    const response = await api.get('/users');
-    return response.data;
+    return api.get<User[]>('/users');
   },
   
   getUserById: async (id: string): Promise<User> => {
-    const response = await api.get(`/users/${id}`);
-    return response.data;
+    return api.get<User>(`/users/${id}`);
   },
   
   updateUser: async (id: string, data: UpdateUserValues): Promise<User> => {
-    const response = await api.put(`/users/${id}`, data);
-    return response.data;
+    return api.put<User>(`/users/${id}`, data);
   },
   
   deleteUser: async (id: string): Promise<void> => {
-    await api.delete(`/users/${id}`);
+    return api.delete<void>(`/users/${id}`);
   }
 }; 
