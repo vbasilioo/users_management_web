@@ -64,3 +64,29 @@ pnpm dev
 ```
 
 Acesse [http://localhost:3000](http://localhost:3000) para ver o sistema.
+
+## Executando Testes
+
+O projeto utiliza Jest e React Testing Library para testes unitários.
+
+```bash
+# Instalar dependências de desenvolvimento
+pnpm install 
+
+# Executar todos os testes
+pnpm test
+
+# Executar testes em modo watch
+pnpm test:watch
+```
+
+### Testes Implementados
+
+- **Componentes**
+  - `RegisterForm`: testa o componente de formulário de registro, incluindo estados de carregamento, sucesso e validação de campos.
+
+- **Hooks**
+  - `useRegisterForm`: testa o hook responsável pela lógica de registro, incluindo inicialização, submissão de formulário e tratamento de erros.
+
+- **Integração**
+  - Fluxo completo de registro: testa a integração entre o formulário e os serviços, simulando o fluxo completo de registro de usuário.
