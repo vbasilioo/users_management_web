@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import { useState, useEffect, useCallback } from 'react';
 import { useAppSelector } from '@/lib/redux/hooks';
 import { useAuth } from '../useAuth';
+import { isUser } from '@/constants/roles';
 
 export function useLogin() {
   const { login, authCheckComplete } = useAuth();
@@ -20,7 +21,11 @@ export function useLogin() {
   useEffect(() => {
     if (isAuthenticated && user && !isRedirecting) {
       setIsRedirecting(true);
-      router.push('/dashboard');
+      if (isUser(user.role)) {
+        router.replace('/dashboard/profile');
+      } else {
+        router.replace('/dashboard');
+      }
     }
   }, [isAuthenticated, user, router, isRedirecting]);
   
@@ -41,7 +46,6 @@ export function useLogin() {
       if (success) {
         toast.success('Login successful!');
         setIsRedirecting(true);
-        router.push('/dashboard');
       } else {
         setError('root', { 
           message: 'Invalid credentials. Please check your email and password.' 
@@ -53,7 +57,7 @@ export function useLogin() {
       console.error('Login error:', error);
       setIsSubmitting(false);
     }
-  }, [login, router, setError]);
+  }, [login, setError]);
 
   const togglePasswordVisibility = useCallback(() => {
     setShowPassword(prev => !prev);

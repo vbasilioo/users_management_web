@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppSelector } from '@/lib/redux/hooks';
 import { Spinner } from '@/components/ui/Spinner';
+import { isUser } from '@/constants/roles';
 
 export default function Home() {
   const router = useRouter();
@@ -11,9 +12,13 @@ export default function Home() {
   
   useEffect(() => {
     if (isAuthenticated && user) {
-      router.push('/dashboard');
+      if (isUser(user.role)) {
+        router.replace('/dashboard/profile');
+      } else {
+        router.replace('/dashboard');
+      }
     } else {
-      router.push('/auth/login');
+      router.replace('/auth/login');
     }
   }, [router, isAuthenticated, user]);
 

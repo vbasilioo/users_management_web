@@ -2,23 +2,26 @@
 
 import { useEffect } from 'react';
 import { useAuth } from '@/components/auth/useAuth';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { isUser } from '@/constants/roles';
 
 export function useDashboardLayout() {
   const { user, isLoading } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
   
   useEffect(() => {
     if (!isLoading && !user) {
-      router.push('/auth/login');
+      router.replace('/auth/login');
       return;
     }
     
     if (!isLoading && user && isUser(user.role)) {
-      router.push('/dashboard/profile');
+      if (pathname === '/dashboard') {
+        router.replace('/dashboard/profile');
+      }
     }
-  }, [user, isLoading, router]);
+  }, [user, isLoading, router, pathname]);
   
   const shouldRenderFullLayout = !isLoading && user && !isUser(user.role);
   const shouldRenderSimpleLayout = !isLoading && user && isUser(user.role);
