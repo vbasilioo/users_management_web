@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowRightIcon, CheckCircle, AlertCircle, LogOut, Menu } from 'lucide-react';
+import { ArrowRightIcon, AlertCircle, LogOut, Menu } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { User } from '@/schemas/user.schemas';
 import { UseFormReturn } from 'react-hook-form';
@@ -35,7 +35,6 @@ export function ProfileUI({
   isSubmitting,
   showPasswordChange,
   permissionError,
-  profileUpdateSuccess,
   onPasswordToggle,
   onSubmit,
   getInitials,
@@ -55,15 +54,6 @@ export function ProfileUI({
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
             {permissionError}
-          </AlertDescription>
-        </Alert>
-      )}
-      
-      {profileUpdateSuccess && (
-        <Alert variant="default" className="mb-6 bg-green-50 border-green-200 text-green-800">
-          <CheckCircle className="h-4 w-4 text-green-600" />
-          <AlertDescription>
-            Profile updated successfully!
           </AlertDescription>
         </Alert>
       )}
