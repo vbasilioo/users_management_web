@@ -60,7 +60,6 @@ export function processUserCreatedAt(createdAt?: string, id?: string): Date {
   }
   
   if (id) {
-    // Gera uma data baseada no ID do usuário para ter valores consistentes
     return new Date(Date.now() - parseInt(id.replace(/-/g, '').substring(0, 8), 16) * 10000);
   }
   

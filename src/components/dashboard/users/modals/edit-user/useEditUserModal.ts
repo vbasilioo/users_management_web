@@ -39,7 +39,6 @@ export function useEditUserModal(
     },
   });
 
-  // Reset form values when user changes
   useEffect(() => {
     if (user) {
       form.reset({
@@ -64,7 +63,6 @@ export function useEditUserModal(
         return;
       }
 
-      // Remover a senha se estiver vazia
       const updatedData = { ...data };
       if (!updatedData.password || updatedData.password.trim() === '') {
         delete updatedData.password;

@@ -44,15 +44,14 @@ import { apiClient } from '../../client';
  * @summary Create a new user
  */
 export const usersControllerCreate = (
-    createUserDto: CreateUserDto,
- signal?: AbortSignal
+    createUserDto: CreateUserDto
 ) => {
       
       
       return apiClient<ApiResponseDto>(
       {url: `/users`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
-      data: createUserDto, signal
+      data: createUserDto
     },
       );
     }
@@ -76,7 +75,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof usersControllerCreate>>, {data: CreateUserDto}> = (props) => {
           const {data} = props ?? {};
 
-          return  usersControllerCreate(data,)
+          return  usersControllerCreate(data)
         }
 
         
@@ -107,14 +106,11 @@ export const useUsersControllerCreate = <TError = void,
     /**
  * @summary Get all users
  */
-export const usersControllerFindAll = (
-    
- signal?: AbortSignal
-) => {
+export const usersControllerFindAll = () => {
       
       
       return apiClient<ApiResponseDto>(
-      {url: `/users`, method: 'GET', signal
+      {url: `/users`, method: 'GET'
     },
       );
     }
@@ -134,7 +130,7 @@ const {query: queryOptions} = options ?? {};
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof usersControllerFindAll>>> = ({ signal }) => usersControllerFindAll(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof usersControllerFindAll>>> = () => usersControllerFindAll();
 
       
 
@@ -200,7 +196,7 @@ const {query: queryOptions} = options ?? {};
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof usersControllerFindAll>>> = ({ signal }) => usersControllerFindAll(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof usersControllerFindAll>>> = () => usersControllerFindAll();
 
       
 
@@ -260,14 +256,11 @@ export function useUsersControllerFindAll<TData = Awaited<ReturnType<typeof user
 /**
  * @summary Get a user by ID
  */
-export const usersControllerFindOne = (
-    id: string,
- signal?: AbortSignal
-) => {
+export const usersControllerFindOne = (id: string) => {
       
       
       return apiClient<ApiResponseDto>(
-      {url: `/users/${id}`, method: 'GET', signal
+      {url: `/users/${id}`, method: 'GET'
     },
       );
     }
@@ -287,7 +280,10 @@ const {query: queryOptions} = options ?? {};
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof usersControllerFindOne>>> = ({ signal }) => usersControllerFindOne(id, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof usersControllerFindOne>>> = ({ queryKey }) => {
+      const id = queryKey[0] as string;
+      return usersControllerFindOne(id);
+    };
 
       
 
@@ -353,7 +349,10 @@ const {query: queryOptions} = options ?? {};
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof usersControllerFindOne>>> = ({ signal }) => usersControllerFindOne(id, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof usersControllerFindOne>>> = ({ queryKey }) => {
+      const id = queryKey[0] as string;
+      return usersControllerFindOne(id);
+    };
 
       
 

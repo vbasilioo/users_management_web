@@ -20,7 +20,7 @@ jest.mock('../useUserTable', () => ({
 }));
 
 jest.mock('./UserTableUI', () => ({
-  UserTableUI: (props: any) => <div data-testid="user-table-ui" />
+  UserTableUI: () => <div data-testid="user-table-ui" />
 }));
 
 describe('UserTable', () => {
@@ -48,8 +48,8 @@ describe('UserTable', () => {
     closeDeleteModal: jest.fn(),
     refreshUsers: jest.fn(),
     formatDate: jest.fn(date => date.toLocaleDateString()),
-    getInitials: jest.fn(name => 'TU'),
-    getRoleColor: jest.fn(role => 'bg-blue-100')
+    getInitials: jest.fn(() => 'TU'),
+    getRoleColor: jest.fn(() => 'bg-blue-100')
   };
   
   beforeEach(() => {
@@ -79,7 +79,7 @@ describe('UserTable', () => {
   });
   
   test('passa as props corretas para o componente UserTableUI', () => {
-    const { container } = render(<UserTable />);
+    render(<UserTable />);
     
     expect(useUserTable).toHaveBeenCalled();
     expect(screen.getByTestId('user-table-ui')).toBeInTheDocument();

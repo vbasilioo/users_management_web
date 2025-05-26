@@ -10,6 +10,7 @@ interface RequestConfig {
   url: string;
   method: string;
   data?: unknown;
+  headers?: HeadersInit;
 }
 
 const handleResponse = async (response: Response) => {

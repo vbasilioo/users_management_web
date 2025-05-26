@@ -34,7 +34,12 @@ export function UserTable() {
     closeEditModal,
     openDeleteModal,
     closeDeleteModal,
-    refreshUsers
+    refreshUsers,
+
+    pageIndex,
+    totalCount,
+    perPage,
+    setPageIndex,
   } = useUserTable();
 
   return (
@@ -58,6 +63,11 @@ export function UserTable() {
         openCreateModal={openCreateModal}
         openEditModal={openEditModal}
         openDeleteModal={openDeleteModal}
+
+        pageIndex={pageIndex}
+        totalCount={totalCount}
+        perPage={perPage}
+        setPageIndex={setPageIndex}
       />
 
       <CreateUserModal 

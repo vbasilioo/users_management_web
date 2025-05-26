@@ -31,6 +31,7 @@ import { Can } from '@/lib/casl/AbilityContext';
 import { Badge } from '@/components/ui/badge';
 import { UserWithDates } from '../useUserTable';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { PaginationFull } from '@/components/pagination';
 
 interface UserTableUIProps {
   users: UserWithDates[];
@@ -51,6 +52,11 @@ interface UserTableUIProps {
   openCreateModal: () => void;
   openEditModal: (user: UserWithDates) => void;
   openDeleteModal: (user: UserWithDates) => void;
+
+  pageIndex: number;
+  totalCount: number;
+  perPage: number;
+  setPageIndex: (index: number) => void;
 }
 
 export function UserTableUI({
@@ -72,6 +78,11 @@ export function UserTableUI({
   openCreateModal,
   openEditModal,
   openDeleteModal,
+
+  pageIndex,
+  totalCount,
+  perPage,
+  setPageIndex,
 }: UserTableUIProps) {
   if (isError) {
     return (
@@ -241,6 +252,13 @@ export function UserTableUI({
           </Table>
         </div>
       )}
+
+      <PaginationFull
+        pageIndex={pageIndex}
+        totalCount={totalCount}
+        perPage={perPage}
+        onPageChange={setPageIndex}
+      />
     </div>
   );
 } 

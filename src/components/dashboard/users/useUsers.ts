@@ -17,11 +17,9 @@ import { useState, useCallback, useRef, useMemo } from 'react';
 import { CreateUserDto, UpdateUserDto } from '@/app/@types/api';
 
 export function useUsers() {
-  // Armazenar erro em estado
   const [error, setError] = useState<string | null>(null);
   const errorShown = useRef<Record<string, boolean>>({});
 
-  // Memoizar a função de tratamento de erro para evitar recriação
   const handleError = useCallback((message: string, key?: string) => {
     setError(message);
     
@@ -36,11 +34,8 @@ export function useUsers() {
     }
   }, []);
 
-  // Memoizar a função de seleção para evitar recriação
   const selectUsers = useCallback((data: unknown) => {
     try {
-      // A estrutura da resposta é { error: false, message: "Users retrieved successfully", data: [...] }
-      // Acessa diretamente data.data que é o array de usuários
       if (data && typeof data === 'object' && 'error' in data && !data.error && 'data' in data && Array.isArray(data.data)) {
         return data.data;
       } else {
@@ -54,18 +49,16 @@ export function useUsers() {
     }
   }, [handleError]);
 
-  // Usar opções de query memoizadas
   const queryOptions = useMemo(() => ({
     query: {
       select: selectUsers,
-      staleTime: 30000, // Reduzir refetches
-      refetchOnWindowFocus: false // Evitar refetch ao focar a janela
+      staleTime: 30000,
+      refetchOnWindowFocus: false
     }
   }), [selectUsers]);
 
   const usersQuery = useUsersControllerFindAll(queryOptions);
   
-  // Memoizar as operações de mutação
   const createMutationOptions = useMemo(() => ({
     mutation: {
       onSuccess: (data: unknown) => {
@@ -121,7 +114,6 @@ export function useUsers() {
   const updateUserMutation = useUsersControllerUpdate(updateMutationOptions);
   const removeUserMutation = useUsersControllerRemove(removeMutationOptions);
 
-  // Memoizar funções de CRUD
   const createUser = useCallback(async (userData: CreateUserValues) => {
     const result = createUserSchema.safeParse(userData);
     if (!result.success) {
@@ -139,7 +131,6 @@ export function useUsers() {
       };
 
       await createUserMutation.mutateAsync({ data: createUserData });
-      // Atualizar a lista de usuários após criar um novo
       usersQuery.refetch();
       return !createUserMutation.isError;
     } catch (error) {
@@ -171,7 +162,6 @@ export function useUsers() {
         id, 
         data: updateUserData 
       });
-      // Atualizar a lista de usuários após editar
       usersQuery.refetch();
       return !updateUserMutation.isError;
     } catch (error) {
@@ -183,7 +173,6 @@ export function useUsers() {
   const removeUser = useCallback(async (id: string) => {
     try {
       await removeUserMutation.mutateAsync({ id });
-      // Atualizar a lista de usuários após remover
       usersQuery.refetch();
       return !removeUserMutation.isError;
     } catch (error) {
@@ -192,7 +181,6 @@ export function useUsers() {
     }
   }, [removeUserMutation, usersQuery]);
 
-  // Memoizar o objeto de retorno para evitar recriação
   return useMemo(() => ({
     users: usersQuery.data || [],
     isLoading: usersQuery.isLoading,

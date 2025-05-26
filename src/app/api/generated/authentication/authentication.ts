@@ -43,15 +43,14 @@ import { apiClient } from '../../client';
  * @summary User login
  */
 export const authControllerLogin = (
-    loginDto: LoginDto,
- signal?: AbortSignal
+    loginDto: LoginDto
 ) => {
       
       
       return apiClient<ApiResponseDto>(
       {url: `/auth/login`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
-      data: loginDto, signal
+      data: loginDto
     },
       );
     }
@@ -75,7 +74,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof authControllerLogin>>, {data: LoginDto}> = (props) => {
           const {data} = props ?? {};
 
-          return  authControllerLogin(data,)
+          return  authControllerLogin(data)
         }
 
         
@@ -108,12 +107,11 @@ export const useAuthControllerLogin = <TError = void,
  */
 export const authControllerGetProfile = (
     
- signal?: AbortSignal
 ) => {
       
       
       return apiClient<ApiResponseDto>(
-      {url: `/auth/me`, method: 'GET', signal
+      {url: `/auth/me`, method: 'GET'
     },
       );
     }
@@ -133,7 +131,7 @@ const {query: queryOptions} = options ?? {};
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof authControllerGetProfile>>> = ({ signal }) => authControllerGetProfile(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof authControllerGetProfile>>> = () => authControllerGetProfile();
 
       
 
@@ -199,7 +197,7 @@ const {query: queryOptions} = options ?? {};
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof authControllerGetProfile>>> = ({ signal }) => authControllerGetProfile(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof authControllerGetProfile>>> = () => authControllerGetProfile();
 
       
 

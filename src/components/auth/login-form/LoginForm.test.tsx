@@ -7,9 +7,14 @@ jest.mock('./useLogin', () => ({
   useLogin: jest.fn(),
 }));
 
-jest.mock('./LoginFormUI', () => ({
-  LoginFormUI: () => <div data-testid="login-form-ui" />
-}));
+jest.mock('./LoginFormUI', () => {
+  const LoginFormUIMock = jest.fn(() => {
+    return null;
+  });
+  return {
+    LoginFormUI: (props: unknown) => LoginFormUIMock(props),
+  };
+});
 
 describe('LoginForm', () => {
   const mockForm = {
@@ -40,11 +45,6 @@ describe('LoginForm', () => {
   });
 
   test('passa as props corretas para o LoginFormUI', () => {
-    const LoginFormUIMock = jest.fn(() => null);
-    jest.mock('./LoginFormUI', () => ({
-      LoginFormUI: (props: any) => LoginFormUIMock(props),
-    }));
-
     render(<LoginForm />);
     
     expect(useLogin).toHaveBeenCalledTimes(1);

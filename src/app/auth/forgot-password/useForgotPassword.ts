@@ -24,8 +24,6 @@ export function useForgotPassword() {
     setIsLoading(true);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      
       toast.success('Password reset instructions sent to your email');
       router.push('/auth/login');
     } catch {

@@ -11,8 +11,6 @@
  */
 export type UpdateUserDtoRole = typeof UpdateUserDtoRole[keyof typeof UpdateUserDtoRole];
 
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const UpdateUserDtoRole = {
   admin: 'admin',
   manager: 'manager',

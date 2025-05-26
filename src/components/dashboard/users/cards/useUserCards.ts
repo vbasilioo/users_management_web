@@ -94,13 +94,11 @@ export function useUserCards() {
     return getUserRoleColor(role);
   }, []);
 
-  // Primeiro processamos todos os usuários adicionando a data processada
   const usersWithProcessedDates = useMemo(() => rawUsers.map(user => ({
     ...user,
     processedCreatedAt: processUserCreatedAt(user.createdAt, user.id)
   })), [rawUsers]);
 
-  // Depois aplicamos os filtros
   const filteredUsers = useMemo(() => {
     const { search, role, dateFilter } = filters;
     
