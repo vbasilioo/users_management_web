@@ -1,2 +1,2 @@
 export { Dashboard } from './Dashboard';
-export { ProfileComponent } from './profile'; 
+export { ProfileComponent, useProfilePage, ProfileUI } from './profile/index'; 
