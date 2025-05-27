@@ -13,25 +13,18 @@ import {
   type UpdateUserValues
 } from '@/schemas/user.schemas';
 import { toast } from 'sonner';
-import { useState, useCallback, useRef, useMemo } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { CreateUserDto, UpdateUserDto } from '@/app/@types/api';
+import { useQueryClient } from '@tanstack/react-query';
 
 export function useUsers() {
   const [error, setError] = useState<string | null>(null);
-  const errorShown = useRef<Record<string, boolean>>({});
+  const queryClient = useQueryClient();
 
-  const handleError = useCallback((message: string, key?: string) => {
+  const handleError = useCallback((message: string, context: string) => {
     setError(message);
-    
-    const errorKey = key || message;
-    if (!errorShown.current[errorKey]) {
-      errorShown.current[errorKey] = true;
-      toast.error(message);
-      
-      setTimeout(() => {
-        errorShown.current[errorKey] = false;
-      }, 5000);
-    }
+    console.error(`Error in ${context}:`, message);
+    toast.error(message);
   }, []);
 
   const selectUsers = useCallback((data: unknown) => {
@@ -64,6 +57,7 @@ export function useUsers() {
       onSuccess: (data: unknown) => {
         if (data && typeof data === 'object' && 'error' in data && !data.error) {
           toast.success('User created successfully!');
+          queryClient.invalidateQueries({ queryKey: ['users'] });
         } else {
           const message = typeof data === 'object' && data && 'message' in data ? String(data.message) : 'Error creating user';
           handleError(message, 'create-user');
@@ -74,13 +68,14 @@ export function useUsers() {
         handleError(message, 'create-user-error');
       }
     }
-  }), [handleError]);
+  }), [handleError, queryClient]);
 
   const updateMutationOptions = useMemo(() => ({
     mutation: {
       onSuccess: (data: unknown) => {
         if (data && typeof data === 'object' && 'error' in data && !data.error) {
           toast.success('User updated successfully!');
+          queryClient.invalidateQueries({ queryKey: ['users'] });
         } else {
           const message = typeof data === 'object' && data && 'message' in data ? String(data.message) : 'Error updating user';
           handleError(message, 'update-user');
@@ -91,7 +86,7 @@ export function useUsers() {
         handleError(message, 'update-user-error');
       }
     }
-  }), [handleError]);
+  }), [handleError, queryClient]);
 
   const removeMutationOptions = useMemo(() => ({
     mutation: {

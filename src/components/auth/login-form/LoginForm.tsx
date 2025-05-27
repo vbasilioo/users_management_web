@@ -5,20 +5,21 @@ import { LoginFormUI } from './LoginFormUI';
 
 export function LoginForm() {
   const { 
-    form, 
-    isLoading,
+    form,
+    onSubmit, 
+    isSubmitting,
     showPassword,
-    togglePasswordVisibility,
+    setShowPassword,
     authCheckComplete
   } = useLogin();
 
   return (
     <LoginFormUI
       form={form}
-      onSubmit={form.onSubmit}
-      isLoading={isLoading}
+      onSubmit={onSubmit}
+      isLoading={isSubmitting}
       showPassword={showPassword}
-      togglePasswordVisibility={togglePasswordVisibility}
+      togglePasswordVisibility={() => setShowPassword(prev => !prev)}
       authCheckComplete={authCheckComplete}
     />
   );

@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { UseFormReturn, FieldValues } from 'react-hook-form';
 import { LoginFormValues } from '@/schemas/auth.schemas';
 import { Spinner } from '@/components/ui/Spinner';
@@ -95,11 +94,11 @@ export function LoginFormUI({
                 </Button>
               </div>
               <FormMessage className="text-red-500 text-sm" />
-              <div className="text-right">
+              {/*<div className="text-right">
                 <Link href="/auth/forgot-password" className="text-sm text-red-600 hover:underline">
                   Forgot Password?
                 </Link>
-              </div>
+              </div>*/}
             </FormItem>
           )}
         />

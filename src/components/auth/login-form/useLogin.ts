@@ -1,14 +1,13 @@
 'use client';
 
+import { useState, useEffect, useCallback } from 'react';
 import { loginFormSchema, type LoginFormValues } from '@/schemas/auth.schemas';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect, useCallback } from 'react';
-import { useAppSelector } from '@/lib/redux/hooks';
 import { useAuth } from '../useAuth';
 import { isUser } from '@/constants/roles';
+import { useAppSelector } from '@/lib/redux/hooks';
 
 export function useLogin() {
   const { login, authCheckComplete } = useAuth();
@@ -43,36 +42,27 @@ export function useLogin() {
     try {
       setIsSubmitting(true);
       const success = await login(data);
-      if (success) {
-        toast.success('Login successful!');
-        setIsRedirecting(true);
-      } else {
+      if (!success) {
         setError('root', { 
           message: 'Invalid credentials. Please check your email and password.' 
         });
-        setIsSubmitting(false);
       }
     } catch (error) {
-      toast.error('Login failed');
       console.error('Login error:', error);
+      setError('root', { 
+        message: 'An error occurred during login. Please try again.' 
+      });
+    } finally {
       setIsSubmitting(false);
     }
   }, [login, setError]);
 
-  const togglePasswordVisibility = useCallback(() => {
-    setShowPassword(prev => !prev);
-  }, []);
-
-  const isLoading = isSubmitting;
-
   return {
-    form: {
-      ...form,
-      onSubmit
-    },
-    isLoading,
+    form,
+    onSubmit,
+    isSubmitting,
     showPassword,
-    togglePasswordVisibility,
+    setShowPassword,
     authCheckComplete
   };
 } 
