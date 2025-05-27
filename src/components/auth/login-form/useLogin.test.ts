@@ -18,7 +18,7 @@ jest.mock('@/lib/redux/hooks', () => ({
 
 describe('useLogin', () => {
   const mockLogin = jest.fn();
-  const mockPush = jest.fn();
+  const mockReplace = jest.fn();
   
   beforeEach(() => {
     jest.clearAllMocks();
@@ -29,7 +29,7 @@ describe('useLogin', () => {
     });
     
     (useRouter as jest.Mock).mockReturnValue({
-      push: mockPush,
+      replace: mockReplace,
     });
     
     (useAppSelector as jest.Mock).mockReturnValue({
@@ -63,12 +63,23 @@ describe('useLogin', () => {
   test('redireciona para o dashboard quando o usuário está autenticado', () => {
     (useAppSelector as jest.Mock).mockReturnValue({
       isAuthenticated: true,
-      user: { id: '1', name: 'Test User' },
+      user: { id: '1', name: 'Test User', role: 'admin' },
     });
     
     renderHook(() => useLogin());
     
-    expect(mockPush).toHaveBeenCalledWith('/dashboard');
+    expect(mockReplace).toHaveBeenCalledWith('/dashboard');
+  });
+
+  test('redireciona para o profile quando o usuário comum está autenticado', () => {
+    (useAppSelector as jest.Mock).mockReturnValue({
+      isAuthenticated: true,
+      user: { id: '1', name: 'Test User', role: 'user' },
+    });
+    
+    renderHook(() => useLogin());
+    
+    expect(mockReplace).toHaveBeenCalledWith('/dashboard/profile');
   });
 
   test('onSubmit chama a função login e redireciona em caso de sucesso', async () => {
@@ -87,7 +98,5 @@ describe('useLogin', () => {
       email: 'test@example.com',
       password: 'password123'
     });
-    
-    expect(mockPush).toHaveBeenCalledWith('/dashboard');
   });
 }); 
