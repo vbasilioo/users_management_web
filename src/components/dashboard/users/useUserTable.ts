@@ -69,7 +69,14 @@ export function useUserTable(): UseUserTableReturn {
   const currentUser = useAppSelector(state => state.auth.user);
 
   const usersHook = useUsers();
-  const { pagination } = usersHook;
+  const { pagination = {
+    currentPage: 1,
+    total: 0,
+    perPage: 10,
+    totalPages: 1,
+    hasNextPage: false,
+    hasPreviousPage: false
+  } } = usersHook;
   
   const users = useMemo<UserWithDates[]>(() => {
     if (Array.isArray(usersHook.users)) {
