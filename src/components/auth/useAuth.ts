@@ -39,12 +39,18 @@ export function useAuth() {
           }));
         } else {
           dispatch(loginFailed('Invalid server response'));
-          toast.error('Error processing server response');
+          toast.error('Error processing server response', {
+            description: 'Please try again later',
+            duration: 3000,
+          });
         }
       },
       onError: () => {
         dispatch(loginFailed('Authentication failed'));
-        toast.error('Invalid credentials');
+        toast.error('Invalid credentials', {
+          description: 'Please check your email and password',
+          duration: 3000,
+        });
       }
     }
   });
@@ -79,7 +85,10 @@ export function useAuth() {
     if (meQuery.error) {
       dispatch(fetchUserFailed('Failed to fetch user profile'));
       dispatch(logout());
-      toast.error('Session expired. Please login again.');
+      toast.error('Session expired', {
+        description: 'Please login again to continue',
+        duration: 3000,
+      });
     }
   }, [dispatch, meQuery.data, meQuery.error, user]);
 
@@ -95,7 +104,10 @@ export function useAuth() {
 
   const handleLogout = () => {
     dispatch(logout());
-    toast.success('Logged out successfully');
+    toast.success('Logged out successfully', {
+      description: 'See you soon!',
+      duration: 2000,
+    });
   };
 
   return {

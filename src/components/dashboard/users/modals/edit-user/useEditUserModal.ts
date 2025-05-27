@@ -71,7 +71,6 @@ export function useEditUserModal(
       const success = await updateUser(user.id, updatedData);
       
       if (success) {
-        toast.success('User updated successfully');
         onSuccess?.();
         onClose?.();
       }

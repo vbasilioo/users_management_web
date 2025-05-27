@@ -24,7 +24,10 @@ export function useUsers() {
   const handleError = useCallback((message: string, context: string) => {
     setError(message);
     console.error(`Error in ${context}:`, message);
-    toast.error(message);
+    toast.error(message, {
+      description: 'Please try again or contact support if the problem persists',
+      duration: 3000,
+    });
   }, []);
 
   const selectUsers = useCallback((data: unknown) => {
@@ -56,7 +59,10 @@ export function useUsers() {
     mutation: {
       onSuccess: (data: unknown) => {
         if (data && typeof data === 'object' && 'error' in data && !data.error) {
-          toast.success('User created successfully!');
+          toast.success('User created successfully!', {
+            description: 'The user can now log in to the system',
+            duration: 2000,
+          });
           queryClient.invalidateQueries({ queryKey: ['users'] });
         } else {
           const message = typeof data === 'object' && data && 'message' in data ? String(data.message) : 'Error creating user';
@@ -74,7 +80,10 @@ export function useUsers() {
     mutation: {
       onSuccess: (data: unknown) => {
         if (data && typeof data === 'object' && 'error' in data && !data.error) {
-          toast.success('User updated successfully!');
+          toast.success('User updated successfully!', {
+            description: 'The changes have been saved',
+            duration: 2000,
+          });
           queryClient.invalidateQueries({ queryKey: ['users'] });
         } else {
           const message = typeof data === 'object' && data && 'message' in data ? String(data.message) : 'Error updating user';
@@ -92,7 +101,11 @@ export function useUsers() {
     mutation: {
       onSuccess: (data: unknown) => {
         if (data && typeof data === 'object' && 'error' in data && !data.error) {
-          toast.success('User removed successfully!');
+          toast.success('User removed successfully!', {
+            description: 'The user has been deleted from the system',
+            duration: 2000,
+          });
+          queryClient.invalidateQueries({ queryKey: ['users'] });
         } else {
           const message = typeof data === 'object' && data && 'message' in data ? String(data.message) : 'Error removing user';
           handleError(message, 'remove-user');
@@ -103,7 +116,7 @@ export function useUsers() {
         handleError(message, 'remove-user-error');
       }
     }
-  }), [handleError]);
+  }), [handleError, queryClient]);
 
   const createUserMutation = useUsersControllerCreate(createMutationOptions);
   const updateUserMutation = useUsersControllerUpdate(updateMutationOptions);

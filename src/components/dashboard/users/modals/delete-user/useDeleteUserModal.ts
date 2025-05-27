@@ -30,7 +30,6 @@ export function useDeleteUserModal(
       const success = await removeUser(user.id);
       
       if (success) {
-        toast.success('User deleted successfully');
         onSuccess?.();
         onClose?.();
       } else {

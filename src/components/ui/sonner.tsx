@@ -13,18 +13,20 @@ const Toaster = ({ ...props }: ToasterProps) => {
       closeButton
       richColors
       expand
-      position="top-right"
+      position="top-center"
+      duration={2000}
       toastOptions={{
-        style: {
-          background: 'var(--background)',
-          color: 'var(--foreground)',
-          border: '1px solid var(--border)',
-        },
         classNames: {
-          success: "bg-success text-success-foreground border-success",
-          error: "bg-destructive text-destructive-foreground border-destructive",
-          default: "bg-background text-foreground border-border",
-        }
+          toast: "bg-background border-border",
+          title: "text-foreground",
+          description: "text-muted-foreground",
+          actionButton: "bg-primary text-primary-foreground",
+          cancelButton: "bg-muted hover:bg-muted",
+          success: "!bg-success !text-success-foreground !border-success group-[.toaster]:bg-success group-[.toaster]:text-success-foreground group-[.toaster]:border-success",
+          error: "!bg-destructive !text-destructive-foreground !border-destructive group-[.toaster]:bg-destructive group-[.toaster]:text-destructive-foreground group-[.toaster]:border-destructive",
+          info: "!bg-info !text-info-foreground !border-info group-[.toaster]:bg-info group-[.toaster]:text-info-foreground group-[.toaster]:border-info",
+          warning: "!bg-warning !text-warning-foreground !border-warning group-[.toaster]:bg-warning group-[.toaster]:text-warning-foreground group-[.toaster]:border-warning",
+        },
       }}
       {...props}
     />

@@ -18,7 +18,7 @@ import {
   Trash2,
   Filter,
   Loader2,
-  Menu
+  RefreshCcw
 } from 'lucide-react';
 import { 
   Select,
@@ -30,7 +30,6 @@ import {
 import { Can } from '@/lib/casl/AbilityContext';
 import { Badge } from '@/components/ui/badge';
 import { UserWithDates } from '../useUserTable';
-import { SidebarTrigger } from '@/components/ui/sidebar';
 import { PaginationFull } from '@/components/pagination';
 
 interface UserTableUIProps {
@@ -93,12 +92,38 @@ export function UserTableUI({
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center md:hidden mb-4">
-        <h1 className="text-xl font-medium">Users</h1>
-        <SidebarTrigger className="text-gray-600">
-          <Menu className="h-5 w-5" />
-        </SidebarTrigger>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <Button
+            onClick={() => {
+              setSearchQuery('');
+              setRoleFilter('all');
+              setDateFilter('all');
+            }}
+            variant="outline"
+            size="icon"
+            className="h-8 w-8"
+            disabled={isLoading}
+          >
+            <RefreshCcw className="h-4 w-4" />
+          </Button>
+          <Input
+            placeholder="Filter users..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="h-8 w-[150px] lg:w-[250px]"
+          />
+        </div>
+        <Button
+          onClick={openCreateModal}
+          size="sm"
+          className="h-8"
+          disabled={isLoading}
+        >
+          <Plus className="mr-2 h-4 w-4" />
+          New User
+        </Button>
       </div>
       
       <div className="rounded-lg border bg-background p-4">
@@ -151,16 +176,6 @@ export function UserTableUI({
               </Select>
             </div>
           </div>
-
-          <Can do="create" on="User">
-            <Button 
-              className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white"
-              onClick={openCreateModal}
-            >
-              <Plus size={16} className="mr-1" />
-              Add user
-            </Button>
-          </Can>
         </div>
       </div>
 
