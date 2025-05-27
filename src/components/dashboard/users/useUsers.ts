@@ -19,6 +19,34 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 import { z } from 'zod';
 
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+  role: 'admin' | 'manager' | 'user';
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface PaginationMeta {
+  total: number;
+  currentPage: number;
+  perPage: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+interface ApiResponse {
+  error: boolean;
+  message: string;
+  data: {
+    data: User[];
+    meta: PaginationMeta;
+  };
+}
+
 export function useUsers() {
   const [error, setError] = useState<string | null>(null);
   const queryClient = useQueryClient();
@@ -50,15 +78,39 @@ export function useUsers() {
         'data' in data.data &&
         Array.isArray(data.data.data)
       ) {
-        return data.data.data;
+        const response = data as ApiResponse;
+        return {
+          users: response.data.data,
+          pagination: response.data.meta
+        };
       } else {
         const message = typeof data === 'object' && data && 'message' in data ? String(data.message) : 'Invalid response format';
         handleError(message, 'users-list');
-        return [];
+        return {
+          users: [] as User[],
+          pagination: {
+            total: 0,
+            currentPage: 1,
+            perPage: 10,
+            totalPages: 1,
+            hasNextPage: false,
+            hasPreviousPage: false
+          }
+        };
       }
     } catch {
       handleError('Failed to fetch users', 'users-list-error');
-      return [];
+      return {
+        users: [] as User[],
+        pagination: {
+          total: 0,
+          currentPage: 1,
+          perPage: 10,
+          totalPages: 1,
+          hasNextPage: false,
+          hasPreviousPage: false
+        }
+      };
     }
   }, [handleError]);
 
@@ -205,7 +257,15 @@ export function useUsers() {
   }, [removeUserMutation]);
 
   return useMemo(() => ({
-    users: usersQuery.data || [],
+    users: usersQuery.data?.users || [],
+    pagination: usersQuery.data?.pagination || {
+      total: 0,
+      currentPage: 1,
+      perPage: 10,
+      totalPages: 1,
+      hasNextPage: false,
+      hasPreviousPage: false
+    },
     isLoading: usersQuery.isLoading,
     isError: usersQuery.isError,
     error,
@@ -218,7 +278,17 @@ export function useUsers() {
     isUpdating: updateUserMutation.isPending,
     isRemoving: removeUserMutation.isPending,
     
-    refreshUsers: () => queryClient.invalidateQueries({ queryKey: ['users'] })
+    refreshUsers: (newPage?: number) => {
+      if (newPage) {
+        queryClient.invalidateQueries({ 
+          queryKey: ['users', { page: newPage, perPage, search }]
+        });
+      } else {
+        queryClient.invalidateQueries({ 
+          queryKey: ['users']
+        });
+      }
+    }
   }), [
     usersQuery.data,
     usersQuery.isLoading,
@@ -227,9 +297,12 @@ export function useUsers() {
     createUser,
     updateUser,
     removeUser,
+    queryClient,
     createUserMutation.isPending,
     updateUserMutation.isPending,
     removeUserMutation.isPending,
-    queryClient
+    queryClient,
+    perPage,
+    search
   ]);
 } 

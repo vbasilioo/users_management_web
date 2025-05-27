@@ -39,6 +39,9 @@ export function UserTable() {
     pageIndex,
     totalCount,
     perPage,
+    totalPages,
+    hasNextPage,
+    hasPreviousPage,
     setPageIndex,
     currentUser,
   } = useUserTable();
@@ -68,6 +71,9 @@ export function UserTable() {
         pageIndex={pageIndex}
         totalCount={totalCount}
         perPage={perPage}
+        totalPages={totalPages}
+        hasNextPage={hasNextPage}
+        hasPreviousPage={hasPreviousPage}
         setPageIndex={setPageIndex}
         currentUser={currentUser}
       />

@@ -54,6 +54,9 @@ interface UserTableUIProps {
   pageIndex: number;
   totalCount: number;
   perPage: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
   setPageIndex: (index: number) => void;
   currentUser: { id: string; role: string } | null;
 }
@@ -81,6 +84,9 @@ export function UserTableUI({
   pageIndex,
   totalCount,
   perPage,
+  totalPages,
+  hasNextPage,
+  hasPreviousPage,
   setPageIndex,
   currentUser,
 }: UserTableUIProps) {
@@ -269,6 +275,9 @@ export function UserTableUI({
         pageIndex={pageIndex}
         totalCount={totalCount}
         perPage={perPage}
+        totalPages={totalPages}
+        hasNextPage={hasNextPage}
+        hasPreviousPage={hasPreviousPage}
         onPageChange={setPageIndex}
       />
     </div>

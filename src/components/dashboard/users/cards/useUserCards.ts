@@ -21,8 +21,6 @@ export type FilterValues = z.infer<typeof filterSchema>;
 
 export function useUserCards() {
   const searchParams = useSearchParams();
-  const page = z.coerce.number().parse(searchParams.get('page') ?? '1');
-  const perPage = z.coerce.number().parse(searchParams.get('perPage') ?? '10');
   const [searchTerm, setSearchTerm] = useState<string>(
     searchParams.get('search') || ''
   );
@@ -41,7 +39,8 @@ export function useUserCards() {
   const { 
     users: rawUsers, 
     isLoading, 
-    isError, 
+    isError,
+    pagination,
     refreshUsers
   } = useUsers();
   
@@ -123,9 +122,12 @@ export function useUserCards() {
     users: filteredUsers,
     isLoading,
     isError,
-    page,
-    perPage,
-    totalCount: filteredUsers.length,
+    page: pagination.currentPage,
+    perPage: pagination.perPage,
+    totalCount: pagination.total,
+    totalPages: pagination.totalPages,
+    hasNextPage: pagination.hasNextPage,
+    hasPreviousPage: pagination.hasPreviousPage,
     setDebouncedSearchTerm: setSearchTerm,
     
     handleOpenCreateModal,

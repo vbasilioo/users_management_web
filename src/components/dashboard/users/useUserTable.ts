@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useMemo, useState } from 'react';
-import { useUsers } from './useUsers';
+import { useUsers, User } from './useUsers';
 import { 
   formatUserDate, 
   getUserRoleColor, 
@@ -10,15 +10,9 @@ import {
 } from './utils/userFormatters';
 import { useAppSelector } from '@/lib/redux/hooks';
 
-export interface UserWithDates {
-  id: string;
-  name: string;
-  email: string;
+export interface UserWithDates extends Omit<User, 'role'> {
   role?: 'admin' | 'manager' | 'user';
   avatar?: string;
-  createdAt?: string;
-  updatedAt?: string;
-  password?: string;
   processedCreatedAt: Date;
 }
 
@@ -55,14 +49,14 @@ export interface UseUserTableReturn {
   pageIndex: number;
   totalCount: number;
   perPage: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
   setPageIndex: (index: number) => void;
   currentUser: { id: string; role: string } | null;
 }
 
 export function useUserTable(): UseUserTableReturn {
-  const usersHook = useUsers();
-  const currentUser = useAppSelector(state => state.auth.user);
-
   const [searchQuery, setSearchQuery] = useState('');
   const [roleFilter, setRoleFilter] = useState<'all' | 'admin' | 'manager' | 'user'>('all');
   const [dateFilter, setDateFilter] = useState<'all' | 'week' | 'month' | 'year'>('all');
@@ -72,9 +66,10 @@ export function useUserTable(): UseUserTableReturn {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UserWithDates | null>(null);
 
-  const [pageIndex, setPageIndex] = useState(1);
-  const perPage = 10;
-  const totalCount = usersHook.users.length;
+  const currentUser = useAppSelector(state => state.auth.user);
+
+  const usersHook = useUsers();
+  const { pagination } = usersHook;
   
   const users = useMemo<UserWithDates[]>(() => {
     if (Array.isArray(usersHook.users)) {
@@ -87,8 +82,6 @@ export function useUserTable(): UseUserTableReturn {
   }, [usersHook.users]);
   
   const filteredUsers = useMemo(() => {
-    const start = (pageIndex - 1) * perPage;
-    const end = start + perPage;
     return users.filter(user => {
       const matchesSearch = !searchQuery || 
         user.name?.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -121,8 +114,8 @@ export function useUserTable(): UseUserTableReturn {
       }
       
       return matchesSearch && matchesRole && matchesDate;
-    }).slice(start, end);
-  }, [users, searchQuery, roleFilter, dateFilter, pageIndex, perPage]);
+    });
+  }, [users, searchQuery, roleFilter, dateFilter]);
   
   const openCreateModal = useCallback(() => {
     setCreateModalOpen(true);
@@ -151,6 +144,13 @@ export function useUserTable(): UseUserTableReturn {
     setDeleteModalOpen(false);
     setSelectedUser(null);
   }, []);
+
+  const handleSetPageIndex = useCallback((newPage: number) => {
+    const params = new URLSearchParams(window.location.search);
+    params.set('page', newPage.toString());
+    window.history.pushState({}, '', `${window.location.pathname}?${params.toString()}`);
+    usersHook.refreshUsers(newPage);
+  }, [usersHook]);
   
   return {
     users,
@@ -182,10 +182,13 @@ export function useUserTable(): UseUserTableReturn {
     closeDeleteModal,
     refreshUsers: usersHook.refreshUsers,
 
-    pageIndex,
-    totalCount,
-    perPage,
-    setPageIndex,
+    pageIndex: pagination.currentPage,
+    totalCount: pagination.total,
+    perPage: pagination.perPage,
+    totalPages: pagination.totalPages,
+    hasNextPage: pagination.hasNextPage,
+    hasPreviousPage: pagination.hasPreviousPage,
+    setPageIndex: handleSetPageIndex,
     currentUser: currentUser ? { id: currentUser.id || '', role: currentUser.role || 'user' } : null,
   };
 } 

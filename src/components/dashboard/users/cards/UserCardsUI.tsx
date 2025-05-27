@@ -46,6 +46,9 @@ interface UserCardsUIProps {
   page: number;
   perPage: number;
   totalCount: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
   setDebouncedSearchTerm: Dispatch<SetStateAction<string>>;
   
   handleOpenCreateModal: () => void;
@@ -67,6 +70,9 @@ export function UserCardsUI({
   page,
   perPage,
   totalCount,
+  totalPages,
+  hasNextPage,
+  hasPreviousPage,
   setDebouncedSearchTerm,
   handleOpenCreateModal,
   handleEdit,
@@ -208,10 +214,14 @@ export function UserCardsUI({
         pageIndex={page}
         totalCount={totalCount}
         perPage={perPage}
+        totalPages={totalPages}
+        hasNextPage={hasNextPage}
+        hasPreviousPage={hasPreviousPage}
         onPageChange={(newPage) => {
           const params = new URLSearchParams(window.location.search);
           params.set('page', newPage.toString());
           window.history.pushState({}, '', `${window.location.pathname}?${params.toString()}`);
+          window.location.reload(); // Force reload to fetch new page
         }}
       />
     </div>

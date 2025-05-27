@@ -14,16 +14,20 @@ import {
     pageIndex: number;
     totalCount: number;
     perPage: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
     onPageChange: (index: number) => void;
     }
     
     export function PaginationFull({
     pageIndex,
     totalCount,
-    perPage = 20,
+    totalPages,
+    hasNextPage,
+    hasPreviousPage,
     onPageChange,
     }: PaginationProps) {
-    const pages = Math.ceil(totalCount / perPage) || 1;
     return (
         <div className="flex flex-col md:flex-row gap-4 w-full md:items-center md:justify-between">
         <span className="text-sm text-muted-foreground">
@@ -32,7 +36,7 @@ import {
     
         <div className="flex justify-between md:justify-start items-center gap-6 lg:gap-8">
             <div className="text-sm font-medium">
-            Page {pageIndex} of {pages}
+            Page {pageIndex} of {totalPages}
             </div>
     
             <div className="flex items-center gap-2">
@@ -41,7 +45,7 @@ import {
                 variant="outline"
                 className="h-8 w-8 p-0"
                 onClick={() => onPageChange(1)}
-                disabled={pageIndex === 1}
+                disabled={!hasPreviousPage}
             >
                 <ChevronsLeft className="h-4 w-4" />
                 <span className="sr-only">First page</span>
@@ -52,7 +56,7 @@ import {
                 variant="outline"
                 className="h-8 w-8 p-0"
                 onClick={() => onPageChange(pageIndex - 1)}
-                disabled={pageIndex === 1}
+                disabled={!hasPreviousPage}
             >
                 <ChevronLeft className="h-4 w-4" />
                 <span className="sr-only">Previous page</span>
@@ -63,7 +67,7 @@ import {
                 variant="outline"
                 className="h-8 w-8 p-0"
                 onClick={() => onPageChange(pageIndex + 1)}
-                disabled={pageIndex === pages}
+                disabled={!hasNextPage}
             >
                 <ChevronRight className="h-4 w-4" />
                 <span className="sr-only">Next page</span>
@@ -73,8 +77,8 @@ import {
                 type="button"
                 variant="outline"
                 className="h-8 w-8 p-0"
-                onClick={() => onPageChange(pages)}
-                disabled={pageIndex === pages}
+                onClick={() => onPageChange(totalPages)}
+                disabled={!hasNextPage}
             >
                 <ChevronsRight className="h-4 w-4" />
                 <span className="sr-only">Last page</span>

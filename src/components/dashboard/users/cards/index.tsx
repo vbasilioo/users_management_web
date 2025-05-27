@@ -20,6 +20,9 @@ export function UserCards() {
     page,
     perPage,
     totalCount,
+    totalPages,
+    hasNextPage,
+    hasPreviousPage,
     setDebouncedSearchTerm,
     
     handleOpenCreateModal,
@@ -47,6 +50,9 @@ export function UserCards() {
         page={page}
         perPage={perPage}
         totalCount={totalCount}
+        totalPages={totalPages}
+        hasNextPage={hasNextPage}
+        hasPreviousPage={hasPreviousPage}
         setDebouncedSearchTerm={setDebouncedSearchTerm}
         handleOpenCreateModal={handleOpenCreateModal}
         handleCloseCreateModal={handleCloseCreateModal}
