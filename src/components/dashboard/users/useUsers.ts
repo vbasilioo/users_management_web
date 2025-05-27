@@ -16,10 +16,17 @@ import { toast } from 'sonner';
 import { useState, useCallback, useMemo } from 'react';
 import { CreateUserDto, UpdateUserDto } from '@/app/@types/api';
 import { useQueryClient } from '@tanstack/react-query';
+import { useSearchParams } from 'next/navigation';
+import { z } from 'zod';
 
 export function useUsers() {
   const [error, setError] = useState<string | null>(null);
   const queryClient = useQueryClient();
+  const searchParams = useSearchParams();
+  
+  const page = z.coerce.number().parse(searchParams.get('page') ?? '1');
+  const perPage = z.coerce.number().parse(searchParams.get('perPage') ?? '10');
+  const search = searchParams.get('search') || '';
 
   const handleError = useCallback((message: string, context: string) => {
     setError(message);
@@ -45,16 +52,17 @@ export function useUsers() {
     }
   }, [handleError]);
 
-  const queryOptions = useMemo(() => ({
-    query: {
-      select: selectUsers,
-      staleTime: 30000,
-      refetchOnWindowFocus: false
+  const usersQuery = useUsersControllerFindAll(
+    { search, page, perPage },
+    {
+      query: {
+        select: selectUsers,
+        staleTime: 30000,
+        refetchOnWindowFocus: false
+      }
     }
-  }), [selectUsers]);
+  );
 
-  const usersQuery = useUsersControllerFindAll(queryOptions);
-  
   const createMutationOptions = useMemo(() => ({
     mutation: {
       onSuccess: (data: unknown) => {
@@ -139,13 +147,12 @@ export function useUsers() {
       };
 
       await createUserMutation.mutateAsync({ data: createUserData });
-      usersQuery.refetch();
       return !createUserMutation.isError;
     } catch (error) {
       console.error('Error creating user:', error);
       return false;
     }
-  }, [createUserMutation, handleError, usersQuery]);
+  }, [createUserMutation, handleError]);
 
   const updateUser = useCallback(async (id: string, userData: UpdateUserValues) => {
     const result = updateUserSchema.safeParse(userData);
@@ -170,24 +177,22 @@ export function useUsers() {
         id, 
         data: updateUserData 
       });
-      usersQuery.refetch();
       return !updateUserMutation.isError;
     } catch (error) {
       console.error('Error updating user:', error);
       return false;
     }
-  }, [updateUserMutation, handleError, usersQuery]);
+  }, [updateUserMutation, handleError]);
 
   const removeUser = useCallback(async (id: string) => {
     try {
       await removeUserMutation.mutateAsync({ id });
-      usersQuery.refetch();
       return !removeUserMutation.isError;
     } catch (error) {
       console.error('Error removing user:', error);
       return false;
     }
-  }, [removeUserMutation, usersQuery]);
+  }, [removeUserMutation]);
 
   return useMemo(() => ({
     users: usersQuery.data || [],
@@ -203,18 +208,18 @@ export function useUsers() {
     isUpdating: updateUserMutation.isPending,
     isRemoving: removeUserMutation.isPending,
     
-    refreshUsers: usersQuery.refetch
+    refreshUsers: () => queryClient.invalidateQueries({ queryKey: ['users'] })
   }), [
     usersQuery.data,
     usersQuery.isLoading,
     usersQuery.isError,
-    usersQuery.refetch,
     error,
     createUser,
     updateUser,
     removeUser,
     createUserMutation.isPending,
     updateUserMutation.isPending,
-    removeUserMutation.isPending
+    removeUserMutation.isPending,
+    queryClient
   ]);
 } 

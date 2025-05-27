@@ -17,7 +17,7 @@ export function useUsersPage() {
   const ability = useAbility();
   const router = useRouter();
 
-  const usersQuery = useUsersControllerFindAll({
+  const usersQuery = useUsersControllerFindAll(undefined, {
     query: {
       enabled: ability.can('read', 'User'),
       select: (data) => {

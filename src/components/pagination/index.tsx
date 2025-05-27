@@ -27,12 +27,12 @@ import {
     return (
         <div className="flex flex-col md:flex-row gap-4 w-full md:items-center md:justify-between">
         <span className="text-sm text-muted-foreground">
-            Total de {totalCount} item(s)
+            Total of {totalCount} item(s)
         </span>
     
         <div className="flex justify-between md:justify-start items-center gap-6 lg:gap-8">
             <div className="text-sm font-medium">
-            Página {pageIndex} de {pages}
+            Page {pageIndex} of {pages}
             </div>
     
             <div className="flex items-center gap-2">
@@ -44,7 +44,7 @@ import {
                 disabled={pageIndex === 1}
             >
                 <ChevronsLeft className="h-4 w-4" />
-                <span className="sr-only">Primeira página</span>
+                <span className="sr-only">First page</span>
             </Button>
     
             <Button
@@ -55,7 +55,7 @@ import {
                 disabled={pageIndex === 1}
             >
                 <ChevronLeft className="h-4 w-4" />
-                <span className="sr-only">Página anterior</span>
+                <span className="sr-only">Previous page</span>
             </Button>
     
             <Button
@@ -66,7 +66,7 @@ import {
                 disabled={pageIndex === pages}
             >
                 <ChevronRight className="h-4 w-4" />
-                <span className="sr-only">Próxima página</span>
+                <span className="sr-only">Next page</span>
             </Button>
     
             <Button
@@ -77,7 +77,7 @@ import {
                 disabled={pageIndex === pages}
             >
                 <ChevronsRight className="h-4 w-4" />
-                <span className="sr-only">Última página</span>
+                <span className="sr-only">Last page</span>
             </Button>
             </div>
         </div>
@@ -104,7 +104,7 @@ import {
             disabled={pageIndex === 1}
         >
             <ChevronLeft className="h-4 w-4" />
-            <span className="sr-only">Página anterior</span>
+            <span className="sr-only">Previous page</span>
         </Button>
     
         <span className="whitespace-nowrap">
@@ -119,7 +119,7 @@ import {
             disabled={pageIndex === pages}
         >
             <ChevronRight className="h-4 w-4" />
-            <span className="sr-only">Próxima página</span>
+            <span className="sr-only">Next page</span>
         </Button>
         </div>
     );

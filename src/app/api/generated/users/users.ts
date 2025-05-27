@@ -106,21 +106,72 @@ export const useUsersControllerCreate = <TError = void,
     /**
  * @summary Get all users
  */
-export const usersControllerFindAll = () => {
-      
-      
-      return apiClient<ApiResponseDto>(
-      {url: `/users`, method: 'GET'
-    },
-      );
-    }
+export const usersControllerFindAll = (params?: {
+  search?: string;
+  page?: number;
+  perPage?: number;
+}) => {
+  const queryParams = new URLSearchParams();
+  if (params?.search) queryParams.set('search', params.search);
+  if (params?.page) queryParams.set('page', params.page.toString());
+  if (params?.perPage) queryParams.set('perPage', params.perPage.toString());
   
+  const queryString = queryParams.toString();
+  const url = `/users${queryString ? `?${queryString}` : ''}`;
+  
+  return apiClient<ApiResponseDto>({
+    url,
+    method: 'GET'
+  });
+}
 
-export const getUsersControllerFindAllQueryKey = () => {
-    return [`/users`] as const;
-    }
+export const getUsersControllerFindAllQueryKey = (params?: {
+  search?: string;
+  page?: number;
+  perPage?: number;
+}) => {
+  return ['users', params] as const;
+}
 
-    
+export const getUsersControllerFindAllQueryOptions = <TData = Awaited<ReturnType<typeof usersControllerFindAll>>, TError = void>(
+  params?: {
+    search?: string;
+    page?: number;
+    perPage?: number;
+  },
+  options?: { 
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof usersControllerFindAll>>, TError, TData>>
+  }
+) => {
+  const { query: queryOptions } = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getUsersControllerFindAllQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof usersControllerFindAll>>> = () => usersControllerFindAll(params);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<Awaited<ReturnType<typeof usersControllerFindAll>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type UsersControllerFindAllQueryResult = NonNullable<Awaited<ReturnType<typeof usersControllerFindAll>>>
+export type UsersControllerFindAllQueryError = void
+
+export function useUsersControllerFindAll<TData = Awaited<ReturnType<typeof usersControllerFindAll>>, TError = void>(
+  params?: {
+    search?: string;
+    page?: number;
+    perPage?: number;
+  },
+  options?: { 
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof usersControllerFindAll>>, TError, TData>>
+  }
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getUsersControllerFindAllQueryOptions(params, options);
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  query.queryKey = queryOptions.queryKey;
+  return query;
+}
+
+
+
 export const getUsersControllerFindAllInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof usersControllerFindAll>>>, TError = void>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof usersControllerFindAll>>, TError, TData>>, }
 ) => {
 
@@ -179,72 +230,6 @@ export function useUsersControllerFindAllInfinite<TData = InfiniteData<Awaited<R
   const queryOptions = getUsersControllerFindAllInfiniteQueryOptions(options)
 
   const query = useInfiniteQuery(queryOptions , queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
-
-  return query;
-}
-
-
-
-export const getUsersControllerFindAllQueryOptions = <TData = Awaited<ReturnType<typeof usersControllerFindAll>>, TError = void>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof usersControllerFindAll>>, TError, TData>>, }
-) => {
-
-const {query: queryOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getUsersControllerFindAllQueryKey();
-
-  
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof usersControllerFindAll>>> = () => usersControllerFindAll();
-
-      
-
-      
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof usersControllerFindAll>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type UsersControllerFindAllQueryResult = NonNullable<Awaited<ReturnType<typeof usersControllerFindAll>>>
-export type UsersControllerFindAllQueryError = void
-
-
-export function useUsersControllerFindAll<TData = Awaited<ReturnType<typeof usersControllerFindAll>>, TError = void>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof usersControllerFindAll>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof usersControllerFindAll>>,
-          TError,
-          Awaited<ReturnType<typeof usersControllerFindAll>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useUsersControllerFindAll<TData = Awaited<ReturnType<typeof usersControllerFindAll>>, TError = void>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof usersControllerFindAll>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof usersControllerFindAll>>,
-          TError,
-          Awaited<ReturnType<typeof usersControllerFindAll>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useUsersControllerFindAll<TData = Awaited<ReturnType<typeof usersControllerFindAll>>, TError = void>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof usersControllerFindAll>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Get all users
- */
-
-export function useUsersControllerFindAll<TData = Awaited<ReturnType<typeof usersControllerFindAll>>, TError = void>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof usersControllerFindAll>>, TError, TData>>, }
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getUsersControllerFindAllQueryOptions(options)
-
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 

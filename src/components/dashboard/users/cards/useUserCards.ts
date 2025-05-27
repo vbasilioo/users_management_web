@@ -11,24 +11,28 @@ import {
   getUserRoleColor, 
   processUserCreatedAt 
 } from '../utils/userFormatters';
+import { useSearchParams } from 'next/navigation';
 
 const filterSchema = z.object({
-  search: z.string().optional(),
   role: z.enum(['all', 'admin', 'manager', 'user']).optional(),
-  dateFilter: z.enum(['all', 'week', 'month', 'year']).optional(),
 });
 
 export type FilterValues = z.infer<typeof filterSchema>;
 
 export function useUserCards() {
+  const searchParams = useSearchParams();
+  const page = z.coerce.number().parse(searchParams.get('page') ?? '1');
+  const perPage = z.coerce.number().parse(searchParams.get('perPage') ?? '10');
+  const [searchTerm, setSearchTerm] = useState<string>(
+    searchParams.get('search') || ''
+  );
+  
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UserWithDates | null>(null);
   const [filters, setFilters] = useState<FilterValues>({
-    search: '',
     role: 'all',
-    dateFilter: 'all',
   });
   
   const currentUser = useAppSelector(state => state.auth.user);
@@ -44,9 +48,7 @@ export function useUserCards() {
   const form = useForm<FilterValues>({
     resolver: zodResolver(filterSchema),
     defaultValues: {
-      search: '',
       role: 'all',
-      dateFilter: 'all',
     }
   });
 
@@ -100,42 +102,16 @@ export function useUserCards() {
   })), [rawUsers]);
 
   const filteredUsers = useMemo(() => {
-    const { search, role, dateFilter } = filters;
+    const { role } = filters;
     
     return usersWithProcessedDates.filter(user => {
-      const matchesSearch = !search || 
-        user.name.toLowerCase().includes(search?.toLowerCase() || '') || 
-        user.email.toLowerCase().includes(search?.toLowerCase() || '');
-      
       const matchesRole = !role || role === 'all' || user.role === role;
-      
-      let matchesDate = true;
-      if (dateFilter && dateFilter !== 'all') {
-        const createdDate = user.processedCreatedAt;
-        const now = new Date();
-        const oneWeekAgo = new Date(now); 
-        oneWeekAgo.setDate(now.getDate() - 7);
-        const oneMonthAgo = new Date(now);
-        oneMonthAgo.setDate(now.getDate() - 30);
-        const oneYearAgo = new Date(now);
-        oneYearAgo.setFullYear(now.getFullYear() - 1);
-        
-        switch (dateFilter) {
-          case 'week':
-            matchesDate = createdDate >= oneWeekAgo;
-            break;
-          case 'month':
-            matchesDate = createdDate >= oneMonthAgo;
-            break;
-          case 'year':
-            matchesDate = createdDate >= oneYearAgo;
-            break;
-        }
-      }
-      
-      return matchesSearch && matchesRole && matchesDate;
+      const matchesSearch = !searchTerm || 
+        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchTerm.toLowerCase());
+      return matchesRole && matchesSearch;
     });
-  }, [filters, usersWithProcessedDates]);
+  }, [filters, usersWithProcessedDates, searchTerm]);
 
   return {
     createModalOpen,
@@ -147,6 +123,10 @@ export function useUserCards() {
     users: filteredUsers,
     isLoading,
     isError,
+    page,
+    perPage,
+    totalCount: filteredUsers.length,
+    setDebouncedSearchTerm: setSearchTerm,
     
     handleOpenCreateModal,
     handleCloseCreateModal,

@@ -40,6 +40,7 @@ export function UserTable() {
     totalCount,
     perPage,
     setPageIndex,
+    currentUser,
   } = useUserTable();
 
   return (
@@ -68,6 +69,7 @@ export function UserTable() {
         totalCount={totalCount}
         perPage={perPage}
         setPageIndex={setPageIndex}
+        currentUser={currentUser}
       />
 
       <CreateUserModal 

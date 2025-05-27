@@ -17,6 +17,10 @@ export function UserCards() {
     users,
     isLoading,
     isError,
+    page,
+    perPage,
+    totalCount,
+    setDebouncedSearchTerm,
     
     handleOpenCreateModal,
     handleCloseCreateModal,
@@ -40,6 +44,10 @@ export function UserCards() {
         users={users}
         isLoading={isLoading}
         isError={isError}
+        page={page}
+        perPage={perPage}
+        totalCount={totalCount}
+        setDebouncedSearchTerm={setDebouncedSearchTerm}
         handleOpenCreateModal={handleOpenCreateModal}
         handleCloseCreateModal={handleCloseCreateModal}
         handleEdit={handleEdit}

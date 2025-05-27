@@ -10,14 +10,7 @@ import {
 } from '@/components/ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { 
-  Edit2, 
-  Plus,
-  Search,
-  Trash2,
-  Loader2
-} from 'lucide-react';
+import { Plus, Edit2, Trash2, Loader2 } from 'lucide-react';
 import { 
   Select,
   SelectContent,
@@ -36,6 +29,9 @@ import { format } from 'date-fns';
 import { UserWithDates } from '../useUserTable';
 import { UseFormReturn } from 'react-hook-form';
 import { FilterValues } from './useUserCards';
+import InputSearch from '@/components/ui/InputSearch';
+import { PaginationFull } from '@/components/pagination';
+import { Dispatch, SetStateAction } from 'react';
 
 interface UserCardsUIProps {
   createModalOpen: boolean;
@@ -47,6 +43,10 @@ interface UserCardsUIProps {
   users: UserWithDates[];
   isLoading: boolean;
   isError: boolean;
+  page: number;
+  perPage: number;
+  totalCount: number;
+  setDebouncedSearchTerm: Dispatch<SetStateAction<string>>;
   
   handleOpenCreateModal: () => void;
   handleCloseCreateModal: () => void;
@@ -64,6 +64,10 @@ export function UserCardsUI({
   users,
   isLoading,
   isError,
+  page,
+  perPage,
+  totalCount,
+  setDebouncedSearchTerm,
   handleOpenCreateModal,
   handleEdit,
   handleDelete,
@@ -83,23 +87,10 @@ export function UserCardsUI({
         <div className="rounded-lg border bg-background p-4">
           <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              <FormField
-                control={form.control}
-                name="search"
-                render={({ field }) => (
-                  <FormItem className="flex-1">
-                    <div className="relative">
-                      <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                      <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="Search users..."
-                          className="pl-8 w-full sm:w-[300px]"
-                        />
-                      </FormControl>
-                    </div>
-                  </FormItem>
-                )}
+              <InputSearch
+                handleSetSearch={setDebouncedSearchTerm}
+                placeholder="Pesquisar por nome"
+                showLabel={false}
               />
               
               <FormField
@@ -126,40 +117,15 @@ export function UserCardsUI({
                   </FormItem>
                 )}
               />
-              
-              <FormField
-                control={form.control}
-                name="dateFilter"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Select
-                        onValueChange={(value) => field.onChange(value === 'all' ? 'all' : value)}
-                        value={field.value}
-                      >
-                        <SelectTrigger className="w-[180px]">
-                          <SelectValue placeholder="Date of registration" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">All time</SelectItem>
-                          <SelectItem value="week">Last week</SelectItem>
-                          <SelectItem value="month">Last month</SelectItem>
-                          <SelectItem value="year">Last year</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
             </div>
 
             {isAdmin && (
               <Can do="create" on="User">
                 <Button 
                   onClick={handleOpenCreateModal}
-                  className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white"
+                  className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white ml-auto"
                 >
-                  <Plus size={16} />
+                  <Plus size={16} className="mr-2" />
                   Add user
                 </Button>
               </Can>
@@ -194,7 +160,7 @@ export function UserCardsUI({
                   </CardTitle>
                   <CardDescription>{user.email}</CardDescription>
                 </CardHeader>
-                <CardContent className="p-6 pt-0 flex flex-col items-center">
+                <CardContent className="flex flex-col items-center p-6 pt-0">
                   <Avatar className="h-20 w-20 mb-4">
                     <AvatarImage 
                       src={user.avatar || `https://api.dicebear.com/7.x/adventurer/svg?seed=${user.name}`} 
@@ -237,6 +203,17 @@ export function UserCardsUI({
           )}
         </div>
       )}
+
+      <PaginationFull
+        pageIndex={page}
+        totalCount={totalCount}
+        perPage={perPage}
+        onPageChange={(newPage) => {
+          const params = new URLSearchParams(window.location.search);
+          params.set('page', newPage.toString());
+          window.history.pushState({}, '', `${window.location.pathname}?${params.toString()}`);
+        }}
+      />
     </div>
   );
 } 

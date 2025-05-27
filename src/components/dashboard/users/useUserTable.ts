@@ -8,6 +8,7 @@ import {
   getUserInitials,
   processUserCreatedAt
 } from './utils/userFormatters';
+import { useAppSelector } from '@/lib/redux/hooks';
 
 export interface UserWithDates {
   id: string;
@@ -55,10 +56,12 @@ export interface UseUserTableReturn {
   totalCount: number;
   perPage: number;
   setPageIndex: (index: number) => void;
+  currentUser: { id: string; role: string } | null;
 }
 
 export function useUserTable(): UseUserTableReturn {
   const usersHook = useUsers();
+  const currentUser = useAppSelector(state => state.auth.user);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [roleFilter, setRoleFilter] = useState<'all' | 'admin' | 'manager' | 'user'>('all');
@@ -183,5 +186,6 @@ export function useUserTable(): UseUserTableReturn {
     totalCount,
     perPage,
     setPageIndex,
+    currentUser: currentUser ? { id: currentUser.id || '', role: currentUser.role || 'user' } : null,
   };
 } 

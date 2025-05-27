@@ -17,8 +17,7 @@ import {
   Search,
   Trash2,
   Filter,
-  Loader2,
-  RefreshCcw
+  Loader2
 } from 'lucide-react';
 import { 
   Select,
@@ -56,6 +55,7 @@ interface UserTableUIProps {
   totalCount: number;
   perPage: number;
   setPageIndex: (index: number) => void;
+  currentUser: { id: string; role: string } | null;
 }
 
 export function UserTableUI({
@@ -82,6 +82,7 @@ export function UserTableUI({
   totalCount,
   perPage,
   setPageIndex,
+  currentUser,
 }: UserTableUIProps) {
   if (isError) {
     return (
@@ -91,34 +92,26 @@ export function UserTableUI({
     );
   }
 
+  const canEditUser = (user: UserWithDates) => {
+    if (!currentUser) return false;
+    if (currentUser.role === 'admin') return user.id !== currentUser.id;
+    if (currentUser.role === 'manager') return user.id !== currentUser.id;
+    return false;
+  };
+
+  const canDeleteUser = (user: UserWithDates) => {
+    if (!currentUser) return false;
+    if (currentUser.role === 'admin') return user.id !== currentUser.id;
+    return false;
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <Button
-            onClick={() => {
-              setSearchQuery('');
-              setRoleFilter('all');
-              setDateFilter('all');
-            }}
-            variant="outline"
-            size="icon"
-            className="h-8 w-8"
-            disabled={isLoading}
-          >
-            <RefreshCcw className="h-4 w-4" />
-          </Button>
-          <Input
-            placeholder="Filter users..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="h-8 w-[150px] lg:w-[250px]"
-          />
-        </div>
         <Button
           onClick={openCreateModal}
           size="sm"
-          className="h-8"
+          className="h-8 bg-green-600 hover:bg-green-700 ml-auto"
           disabled={isLoading}
         >
           <Plus className="mr-2 h-4 w-4" />
@@ -237,26 +230,30 @@ export function UserTableUI({
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="h-8 w-8 p-0"
-                            onClick={() => openEditModal(user)}
-                          >
-                            <Edit2 className="h-4 w-4" />
-                            <span className="sr-only">Edit</span>
-                          </Button>
-                          <Can do="delete" on="User">
+                          {canEditUser(user) && (
                             <Button 
                               variant="ghost" 
                               size="sm" 
-                              className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
-                              onClick={() => openDeleteModal(user)}
+                              className="h-8 w-8 p-0 cursor-pointer"
+                              onClick={() => openEditModal(user)}
                             >
-                              <Trash2 className="h-4 w-4" />
-                              <span className="sr-only">Delete</span>
+                              <Edit2 className="h-4 w-4" />
+                              <span className="sr-only">Edit</span>
                             </Button>
-                          </Can>
+                          )}
+                          {canDeleteUser(user) && (
+                            <Can do="delete" on="User">
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50 cursor-pointer"
+                                onClick={() => openDeleteModal(user)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                                <span className="sr-only">Delete</span>
+                              </Button>
+                            </Can>
+                          )}
                         </div>
                       </TableCell>
                     </TableRow>

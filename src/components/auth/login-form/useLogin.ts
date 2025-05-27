@@ -57,12 +57,18 @@ export function useLogin() {
     }
   }, [login, setError]);
 
+  const togglePasswordVisibility = useCallback(() => {
+    setShowPassword(prev => !prev);
+  }, []);
+
   return {
-    form,
-    onSubmit,
-    isSubmitting,
+    form: {
+      ...form,
+      onSubmit
+    },
+    isLoading: isSubmitting,
     showPassword,
-    setShowPassword,
+    togglePasswordVisibility,
     authCheckComplete
   };
 } 
