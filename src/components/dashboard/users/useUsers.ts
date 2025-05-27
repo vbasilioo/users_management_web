@@ -39,8 +39,18 @@ export function useUsers() {
 
   const selectUsers = useCallback((data: unknown) => {
     try {
-      if (data && typeof data === 'object' && 'error' in data && !data.error && 'data' in data && Array.isArray(data.data)) {
-        return data.data;
+      if (
+        data && 
+        typeof data === 'object' && 
+        'error' in data && 
+        !data.error && 
+        'data' in data &&
+        typeof data.data === 'object' &&
+        data.data &&
+        'data' in data.data &&
+        Array.isArray(data.data.data)
+      ) {
+        return data.data.data;
       } else {
         const message = typeof data === 'object' && data && 'message' in data ? String(data.message) : 'Invalid response format';
         handleError(message, 'users-list');
